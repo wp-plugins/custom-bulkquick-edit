@@ -5,18 +5,20 @@ Donate link: http://aihr.us/about-aihrus/donate/
 Tags: custom, bulk edit, quick edit, custom post types
 Requires at least: 3.4
 Tested up to: 3.6.0
-Stable tag: 0.0.2
+Stable tag: 0.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Custom Bulk/Quick Edit plugin allows you to add previously defined custom fields to the edit screen bulk and quick edit panels.
+Custom Bulk/Quick Edit plugin allows you to easily add previously defined custom fields to the edit screen bulk and quick edit panels.
 
 
 == Description ==
 
-Custom Bulk/Quick Edit plugin allows you to add previously defined custom fields to the edit screen bulk and quick edit panels.
+Custom Bulk/Quick Edit plugin allows you to easily add previously defined custom fields to the edit screen bulk and quick edit panels.
 
 Custom Bulk/Quick Edit automatically detects custom fields that use the [manage_{$post_type}_posts_columns](http://codex.wordpress.org/Plugin_API/Filter_Reference/manage_$post_type_posts_columns) filter to display additional columns on the edit screen.
+
+[Video introduction](http://youtu.be/UXvzdlvIPtk)
 
 To use this Custom Bulk/Quick Edit plugin with custom post types, please purchase [Custom Bulk/Quick Edit Premium](http://aihr.us/downloads/custom-bulkquick-edit-premium-wordpress-plugin/).
 
@@ -111,4 +113,4 @@ Beta testers benefit directly with latest versions, a free 1-site license for Cu
 
 == TODO ==
 
-Is there something you want done? Write it up on the [support forums](http://wordpress.org/support/plugin/custom-bulkquick-edit) and then [donate](http://aihr.us/about-aihrus/donate/) or [write an awesome testimonial](http://aihr.us/about-aihrus/testimonials/add-testimonial/).
+See [TODO](https://github.com/michael-cannon/custom-bulkquick-edit/blob/master/TODO.md)
