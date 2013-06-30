@@ -2,6 +2,16 @@
 
 ## TBD
 
+## 0.0.3
+* Revise donation text
+* Update description
+* Strip slashes incoming data
+* Correct data grab for Quick Edit
+* Use after_setup_theme than plugins_loaded
+* BUGFIX post excerpt support detection
+* BUGFIX post excerpt column add
+* Add video introduction
+
 ## 0.0.2
 * Add media
 * Add screenshots

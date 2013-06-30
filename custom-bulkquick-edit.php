@@ -2,8 +2,8 @@
 /**
  * Plugin Name: Custom Bulk/Quick Edit
  * Plugin URI: http://wordpress.org/extend/plugins/custom-bulkquick-edit/
- * Description: Custom Bulk/Quick Edit plugin allows you to add custom fields to the edit screen bulk and quick edit panels.
- * Version: 0.0.2
+ * Description: Custom Bulk/Quick Edit plugin allows you to easily add previously defined custom fields to the edit screen bulk and quick edit panels.
+ * Version: 0.0.3
  * Author: Michael Cannon
  * Author URI: http://aihr.us/about-aihrus/michael-cannon-resume/
  * License: GPLv2 or later
@@ -26,7 +26,7 @@
 class Custom_Bulkquick_Edit {
 	const ID          = 'custom-bulkquick-edit';
 	const PLUGIN_FILE = 'custom-bulkquick-edit/custom-bulkquick-edit.php';
-	const VERSION     = '0.0.2';
+	const VERSION     = '0.0.3';
 
 	private static $base              = null;
 	private static $field_key         = 'cbqe_';
@@ -144,7 +144,7 @@ EOD;
 
 	public function admin_notices_donate() {
 		$content  = '<div class="updated"><p>';
-		$content .= sprintf( __( 'Please donate $2 towards keeping Custom Bulk/Quick Edit plugin supported and maintained %s', 'custom-bulkquick-edit' ), self::$donate_button );
+		$content .= sprintf( __( 'Please donate $2 towards development and support of this Custom Bulk/Quick Edit plugin. %s', 'custom-bulkquick-edit' ), self::$donate_button );
 		$content .= '</p></div>';
 
 		echo $content;
@@ -328,12 +328,14 @@ jQuery(document).ready(function($) {
 			if ( ! $field_enabled )
 				continue;
 
+			$value = stripslashes_deep( $value );
+
 			if ( ! in_array( $field_name, array( 'post_excerpt' ) ) ) {
-				update_post_meta( $post_id, $field_name, wp_kses_post( $value ) );
+				update_post_meta( $post_id, $field_name, $value );
 			} else {
 				$data = array(
 					'ID' => $post_id,
-					$field_name => wp_kses_post( $value ),
+					$field_name => $value,
 				);
 				wp_update_post( $data );
 			}
@@ -463,7 +465,7 @@ jQuery(document).ready(function($) {
 		case 'input':
 		case 'textarea':
 			self::$scripts_bulk[ $column_name ]        = "'" . $field_name . '\': bulk_row.find( \'' . $js_type . '[name="' . $field_name . '"]\' ).val()';
-			self::$scripts_quick[ $column_name . '1' ] = 'var ' . $field_name_var . ' = $( \'.column-' . $column_name . '\', post_row ).html();';
+			self::$scripts_quick[ $column_name . '1' ] = 'var ' . $field_name_var . ' = $( \'.column-' . $column_name . '\', post_row ).text();';
 			self::$scripts_quick[ $column_name . '2' ] = '$( \':input[name="' . $field_name . '"]\', edit_row ).val( ' . $field_name_var . ' );';
 			break;
 		}
@@ -525,7 +527,7 @@ register_deactivation_hook( __FILE__, array( 'Custom_Bulkquick_Edit', 'deactivat
 register_uninstall_hook( __FILE__, array( 'Custom_Bulkquick_Edit', 'uninstall' ) );
 
 
-add_action( 'plugins_loaded', 'custom_bulkquick_edit_init', 199 );
+add_action( 'after_setup_theme', 'custom_bulkquick_edit_init', 999 );
 
 
 /**
