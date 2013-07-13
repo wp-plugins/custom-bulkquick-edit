@@ -24,7 +24,9 @@
 
 
 class Custom_Bulkquick_Edit_Settings {
-	const ID = 'custom-bulkquick-edit-settings';
+	const CONFIG = '__config__';
+	const ENABLE = '__enable__';
+	const ID     = 'custom-bulkquick-edit-settings';
 
 	private static $post_types = array();
 
@@ -52,8 +54,11 @@ class Custom_Bulkquick_Edit_Settings {
 
 	public function __construct() {
 		add_action( 'admin_init', array( &$this, 'admin_init' ) );
-		add_action( 'admin_menu', array( &$this, 'admin_menu' ) );
 		add_action( 'init', array( &$this, 'init' ) );
+
+		// restrict settings page to admins only
+		if ( current_user_can( 'activate_plugins' ) )
+			add_action( 'admin_menu', array( &$this, 'admin_menu' ) );
 	}
 
 
@@ -94,20 +99,20 @@ class Custom_Bulkquick_Edit_Settings {
 			$filter           = 'manage_' . $post_type . '_posts_columns';
 			$supports_excerpt = post_type_supports( $post_type, 'excerpt' );
 			if ( $supports_excerpt ) {
-				self::$settings[ $post_type . '_enable_post_excerpt' ] = array(
+				self::$settings[ $post_type . self::ENABLE . 'post_excerpt' ] = array(
 					'section' => $post_type,
 					'title' => esc_html__( 'Enable Excerpt?', 'custom-bulkquick-edit' ),
 					'label' => esc_html__( 'Excerpt', 'custom-bulkquick-edit' ),
 					'type' => 'checkbox',
 				);
 
-				add_filter( $filter, array( 'Custom_Bulkquick_Edit', 'manage_posts_columns' ), 199 );
-
 				$call_api = true;
 			}
 
-			$fields = array();
-			$fields = apply_filters( $filter, $fields );
+			$fields      = array();
+			$fields      = apply_filters( $filter, $fields );
+			$filter_edit = 'manage_edit-' . $post_type . '_columns';
+			$fields      = apply_filters( $filter_edit, $fields );
 			if ( ! empty( $fields ) ) {
 				// remove built-in fields
 				unset( $fields[ $post_type . '-category' ] );
@@ -121,20 +126,31 @@ class Custom_Bulkquick_Edit_Settings {
 				unset( $fields[ 'thumbnail' ] );
 				unset( $fields[ 'title' ] );
 
-				$title = esc_html__( 'Enable %s?', 'custom-bulkquick-edit' );
+				$title   = esc_html__( 'Enable %s?', 'custom-bulkquick-edit' );
+				$details = esc_html__( '%s Configuration', 'custom-bulkquick-edit' );
 
 				foreach ( $fields as $field => $label ) {
-					self::$settings[ $post_type . '_enable_' . $field ] = array(
+					self::$settings[ $post_type . self::ENABLE . $field ] = array(
 						'section' => $post_type,
 						'title' => sprintf( $title, $label ),
 						'label' => $label,
 						'type' => 'select',
 						'choices' => array(
 							'' => esc_html__( 'No', 'custom-bulkquick-edit' ),
-							// 'checkbox' => esc_html__( 'As checkbox' ),
+							'checkbox' => esc_html__( 'As checkbox', 'custom-bulkquick-edit' ),
 							'input' => esc_html__( 'As field', 'custom-bulkquick-edit' ),
+							'radio' => esc_html__( 'As radio', 'custom-bulkquick-edit' ),
+							'select' => esc_html__( 'As select', 'custom-bulkquick-edit' ),
 							'textarea' => esc_html__( 'As textarea', 'custom-bulkquick-edit' ),
 						)
+					);
+
+					self::$settings[ $post_type . self::ENABLE . $field . self::CONFIG ] = array(
+						'section' => $post_type,
+						'title' => sprintf( $details, $label ),
+						'desc' => esc_html__( 'This configuration section is only for use with checkbox, radio, and select modes. Please seperate options using newlines. Further, you may create options as "the-key|Pretty Value" pairs.', 'custom-bulkquick-edit' ),
+						'label' => $label,
+						'type' => 'textarea',
 					);
 				}
 				$call_api = true;
@@ -142,11 +158,14 @@ class Custom_Bulkquick_Edit_Settings {
 
 			if ( $call_api ) {
 				$action = 'manage_' . $post_type . '_posts_custom_column';
-				if ( ! has_action( $action ) )
+				if ( ! has_action( $action ) ) {
 					add_action( $action, array( 'Custom_Bulkquick_Edit', 'manage_posts_custom_column' ), 199, 2 );
+				} else {
+					add_action( $action, array( 'Custom_Bulkquick_Edit', 'manage_posts_custom_column_precapture' ), 1, 2 );
+					add_action( $action, array( 'Custom_Bulkquick_Edit', 'manage_posts_custom_column_capture' ), 199, 2 );
+				}
 
-				if ( ! has_filter( $filter ) )
-					add_filter( $filter, array( 'Custom_Bulkquick_Edit', 'manage_posts_columns' ), 199 );
+				add_filter( $filter, array( 'Custom_Bulkquick_Edit', 'manage_posts_columns' ), 199 );
 			} else {
 				self::$settings[ $post_type . '_no_options' ] = array(
 					'section' => $post_type,
@@ -375,7 +394,7 @@ class Custom_Bulkquick_Edit_Settings {
 	public function display_about_section() {
 		echo '
 			<div id="about" style="width: 70%; min-height: 225px;">
-				<p><img class="alignright size-medium" title="Michael in Red Square, Moscow, Russia" src="/wp-content/plugins/custom-bulkquick-edit/media/michael-cannon-red-square-300x2251.jpg" alt="Michael in Red Square, Moscow, Russia" width="300" height="225" /><a href="http://wordpress.org/extend/plugins/custom-bulkquick-edit/">Custom Bulk/Quick Edit</a> is by <a href="http://aihr.us/about-aihrus/michael-cannon-resume/">Michael Cannon</a>. He\'s <a title="Lot\'s of stuff about Peichi Liu…" href="http://peimic.com/t/peichi-liu/">Peichi’s</a> smiling man, an adventurous <a title="Water rat" href="http://www.chinesehoroscope.org/chinese_zodiac/rat/" target="_blank">water-rat</a>, <a title="Axelerant – Open Source. Engineered." href="http://axelerant.com/who-we-are">chief people officer</a>, <a title="Aihrus – website support made easy since 1999" href="http://aihr.us/about-aihrus/">chief technology officer</a>, <a title="Road biker, cyclist, biking; whatever you call, I love to ride" href="http://peimic.com/c/biking/">cyclist</a>, <a title="Michael\'s poetic like literary ramblings" href="http://peimic.com/t/poetry/">poet</a>, <a title="World Wide Opportunities on Organic Farms" href="http://peimic.com/t/WWOOF/">WWOOF’er</a> and <a title="My traveled to country list, is more than my age." href="http://peimic.com/c/travel/">world traveler</a>.</p>
+				<p><img class="alignright size-medium" title="Michael in Red Square, Moscow, Russia" src="' . WP_PLUGIN_URL . '/testimonials-widget/media/michael-cannon-red-square-300x2251.jpg" alt="Michael in Red Square, Moscow, Russia" width="300" height="225" /><a href="http://wordpress.org/extend/plugins/custom-bulkquick-edit/">Custom Bulk/Quick Edit Settings</a> is by <a href="http://aihr.us/about-aihrus/michael-cannon-resume/">Michael Cannon</a>. He\'s <a title="Lot\'s of stuff about Peichi Liu…" href="http://peimic.com/t/peichi-liu/">Peichi’s</a> smiling man, an adventurous <a title="Water rat" href="http://www.chinesehoroscope.org/chinese_zodiac/rat/" target="_blank">water-rat</a>, <a title="Axelerant – Open Source. Engineered." href="http://axelerant.com/who-we-are">chief people officer</a>, <a title="Aihrus – website support made easy since 1999" href="http://aihr.us/about-aihrus/">chief technology officer</a>, <a title="Road biker, cyclist, biking; whatever you call, I love to ride" href="http://peimic.com/c/biking/">cyclist</a>, <a title="Michael\'s poetic like literary ramblings" href="http://peimic.com/t/poetry/">poet</a>, <a title="World Wide Opportunities on Organic Farms" href="http://peimic.com/t/WWOOF/">WWOOF’er</a> and <a title="My traveled to country list, is more than my age." href="http://peimic.com/c/travel/">world traveler</a>.</p>
 			</div>
 		';
 	}
