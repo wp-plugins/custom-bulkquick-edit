@@ -5,7 +5,7 @@ Donate link: http://aihr.us/about-aihrus/donate/
 Tags: custom, bulk edit, quick edit, custom post types
 Requires at least: 3.4
 Tested up to: 3.6.0
-Stable tag: 0.0.3
+Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -18,8 +18,10 @@ Custom Bulk/Quick Edit plugin allows you to easily add previously defined custom
 
 Custom Bulk/Quick Edit automatically detects custom fields that use the [manage_{$post_type}_posts_columns](http://codex.wordpress.org/Plugin_API/Filter_Reference/manage_$post_type_posts_columns) filter to display additional columns on the edit screen.
 
-[youtube http://www.youtube.com/watch?v=UXvzdlvIPtk]
-[Video introduction](http://youtu.be/UXvzdlvIPtk)
+It ties into the [bulk_edit_custom_box](http://codex.wordpress.org/Plugin_API/Action_Reference/bulk_edit_custom_box) and [quick_edit_custom_box](http://codex.wordpress.org/Plugin_API/Action_Reference/quick_edit_custom_box) actions.
+
+[youtube http://www.youtube.com/watch?v=wd6munNz0gI]
+**[Video introduction](http://youtu.be/UXvzdlvIPtk)**
 
 To use this Custom Bulk/Quick Edit plugin with custom post types, please purchase [Custom Bulk/Quick Edit Premium](http://aihr.us/downloads/custom-bulkquick-edit-premium-wordpress-plugin/).
 
@@ -28,6 +30,8 @@ To use this Custom Bulk/Quick Edit plugin with custom post types, please purchas
 Do [let me know](http://wordpress.org/support/plugin/custom-bulkquick-edit) how well you're able to use this plugin or not. 
 
 This plugin grew out of the frustration of having to custom write this code for every client. It works best when the custom post types have already added columns to the edit screen via the [manage_{$post_type}_posts_columns](http://codex.wordpress.org/Plugin_API/Filter_Reference/manage_$post_type_posts_columns) filter.
+
+[Example](https://aihrus.zendesk.com/entries/24800411-How-do-I-add-custom-columns-).
 
 = Limitations =
 
@@ -45,7 +49,14 @@ Currently, only text input and textarea fields are supported.
 **Post**
 
 * Enable excerpts?
-* Enable "custom field"? - Configure as text input or textarea
+* Enable "Custom Field"? - As checkbox, radio, select, text input,r textarea
+* "Custom Field" Configuration - This configuration section is only for use with checkbox, radio, and select modes. Please seperate options using newlines. Further, you may create options as "the-key|Pretty Value" pairs.
+	* Example configuration
+`1
+Two
+3|Three
+four|Four
+five-five|55`
 
 **Compatibility & Reset**
 
@@ -85,10 +96,10 @@ Please visit the [Custom Bulk/Quick Edit Knowledge Base](https://aihrus.zendesk.
 
 == Screenshots ==
 
-1. TwentyTwelve theme with Posts Post Excerpts enabled
-2. Posts Quick Edit with excerpts
-3. Posts Bulk Edit with excerpts
-4. Custom Bulk/Quick Edit Settings panel
+1. Custom Bulk/Quick Edit Settings panel
+2. TwentyTwelve theme with Posts Post Excerpts enabled
+3. Posts Quick Edit with excerpts
+4. Posts Bulk Edit with excerpts
 
 == Changelog ==
 
