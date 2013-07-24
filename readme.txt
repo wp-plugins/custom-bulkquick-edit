@@ -16,12 +16,12 @@ Custom Bulk/Quick Edit plugin allows you to easily add previously defined custom
 
 Custom Bulk/Quick Edit plugin allows you to easily add previously defined custom fields to the edit screen bulk and quick edit panels.
 
-Custom Bulk/Quick Edit automatically detects custom fields that use the [manage_{$post_type}_posts_columns](http://codex.wordpress.org/Plugin_API/Filter_Reference/manage_$post_type_posts_columns) filter to display additional columns on the edit screen.
-
-It ties into the [bulk_edit_custom_box](http://codex.wordpress.org/Plugin_API/Action_Reference/bulk_edit_custom_box) and [quick_edit_custom_box](http://codex.wordpress.org/Plugin_API/Action_Reference/quick_edit_custom_box) actions.
-
 [youtube http://www.youtube.com/watch?v=wd6munNz0gI]
 **[Video introduction](http://youtu.be/UXvzdlvIPtk)**
+
+Custom Bulk/Quick Edit automatically detects custom fields that use the [manage_{$post_type}_posts_columns](http://codex.wordpress.org/Plugin_API/Filter_Reference/manage_$post_type_posts_columns) filter to display additional columns on the edit screen. Therefore, unless it's already configured, your theme's `functions.php` file will have to modified to add custom field columns. See "[How do I add custom columns to my edit page?](https://aihrus.zendesk.com/entries/24800411-How-do-I-add-custom-columns-to-my-edit-page-)" for help.
+
+This plugin ties into the [bulk_edit_custom_box](http://codex.wordpress.org/Plugin_API/Action_Reference/bulk_edit_custom_box) and [quick_edit_custom_box](http://codex.wordpress.org/Plugin_API/Action_Reference/quick_edit_custom_box) actions.
 
 To use this Custom Bulk/Quick Edit plugin with custom post types, please purchase [Custom Bulk/Quick Edit Premium](http://aihr.us/downloads/custom-bulkquick-edit-premium-wordpress-plugin/).
 
@@ -35,7 +35,7 @@ This plugin grew out of the frustration of having to custom write this code for 
 
 = Limitations =
 
-Currently, only text input and textarea fields are supported.
+Unless the [manage_{$post_type}_posts_columns](http://codex.wordpress.org/Plugin_API/Filter_Reference/manage_$post_type_posts_columns) is already configured, your theme's `functions.php` file will have to modified to add custom field columns. See "[How do I add custom columns to my edit page?](https://aihrus.zendesk.com/entries/24800411-How-do-I-add-custom-columns-to-my-edit-page-)" for help.
 
 = Primary Features =
 
@@ -49,8 +49,8 @@ Currently, only text input and textarea fields are supported.
 **Post**
 
 * Enable excerpts?
-* Enable "Custom Field"? - As checkbox, radio, select, text input,r textarea
-* "Custom Field" Configuration - This configuration section is only for use with checkbox, radio, and select modes. Please seperate options using newlines. Further, you may create options as "the-key|Pretty Value" pairs.
+* Enable "Custom Field"? - As checkbox, radio, select, text input, or textarea
+* "Custom Field" Configuration - This configuration section is only for use with checkbox, radio, and select modes. Please separate options using newlines. Further, you may create options as "the-key|Pretty Value" pairs.
 	* Example configuration
 `1
 Two
@@ -80,6 +80,11 @@ See the FAQ for further localization tips.
 Please visit the [Custom Bulk/Quick Edit Knowledge Base](https://aihrus.zendesk.com/categories/20112546-Custom-Bulk-Quick-Edit) for frequently asked questions, offering ideas, or getting support.
 
 If you want to contribute and I hope you do, visit the [Custom Bulk/Quick Edit Github repository](https://github.com/michael-cannon/custom-bulkquick-edit).
+
+= Thank You =
+A big, special thank you to [Joe Weber](https://plus.google.com/100063271269277312276/posts) of [12 Star Creative](http://www.12starcreative.com/) for creating the Custom Bulk/Quick Edit banner.
+
+Kudos to [Alex Stone](http://eoionline.org) for documentation revisions.
 
 
 == Installation ==
