@@ -2,6 +2,32 @@
 
 ## master
 
+## 1.0.1
+* API updates
+* Add field_type identifier to edit screen fieldset
+* Add filter cbqe_manage_posts_custom_column_field_type
+* Add filter cbqe_quick_edit_custom_box_field
+* Add filter cbqe_quick_scripts_bulk
+* Add filter cbqe_quick_scripts_extra
+* Add filter cbqe_quick_scripts_quick
+* Add filter cbqe_settings_as_types
+* Add filter cbqe_settings_display_setting
+* Add filter cbqe_settings_post_type
+* Add option to remove current taxonomy entries
+* BUGFIX Built-in fields don't have correct field type
+* BUGFIX Bulk edit not saving
+* BUGFIX Display column data when premium is activated
+* BUGFIX Save during Ajax calls
+* Convert &$this to $this
+* Correct media image path
+* Keep Remove taxonomy out of post columns
+* Only load plugin if admin or doing Ajax
+* Only load settings class admin_init if on edit, plugin, or settings page
+* Quote fields in settings
+* Shorten filter names
+* Suppress warning PHPMD.UnusedFormalParameter
+* Update readme for usability
+
 ## 1.0.0
 * Account for deprecated manage_edit-${post_type}_columns
 * Add StillMaintained.com notice
