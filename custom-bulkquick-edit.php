@@ -3,7 +3,7 @@
  * Plugin Name: Custom Bulk/Quick Edit
  * Plugin URI: http://wordpress.org/extend/plugins/custom-bulkquick-edit/
  * Description: Custom Bulk/Quick Edit plugin allows you to easily add previously defined custom fields to the edit screen bulk and quick edit panels.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: Michael Cannon
  * Author URI: http://aihr.us/about-aihrus/michael-cannon-resume/
  * License: GPLv2 or later
@@ -26,7 +26,7 @@
 class Custom_Bulkquick_Edit {
 	const ID          = 'custom-bulkquick-edit';
 	const PLUGIN_FILE = 'custom-bulkquick-edit/custom-bulkquick-edit.php';
-	const VERSION     = '1.0.0';
+	const VERSION     = '1.0.1';
 
 	private static $base              = null;
 	private static $field_key         = 'cbqe_';
@@ -41,14 +41,15 @@ class Custom_Bulkquick_Edit {
 	public static $post_types      = array();
 	public static $post_types_keys = array();
 	public static $scripts_bulk    = array();
+	public static $scripts_extra   = array();
 	public static $scripts_quick   = array();
 	public static $scripts_called  = false;
 	public static $settings_link   = '';
 
 
 	public function __construct() {
-		add_action( 'admin_init', array( &$this, 'admin_init' ) );
-		add_action( 'init', array( &$this, 'init' ) );
+		add_action( 'admin_init', array( $this, 'admin_init' ) );
+		add_action( 'init', array( $this, 'init' ) );
 		load_plugin_textdomain( self::ID, false, 'custom-bulkquick-edit/languages' );
 	}
 
@@ -57,13 +58,13 @@ class Custom_Bulkquick_Edit {
 		self::$settings_link = '<a href="' . get_admin_url() . 'options-general.php?page=' . Custom_Bulkquick_Edit_Settings::ID . '">' . esc_html__( 'Settings', 'custom-bulkquick-edit' ) . '</a>';
 
 		$this->update();
-		add_action( 'admin_footer', array( &$this, 'admin_footer' ) );
-		add_action( 'bulk_edit_custom_box', array( &$this, 'quick_edit_custom_box' ), 10, 2 );
-		add_action( 'quick_edit_custom_box', array( &$this, 'quick_edit_custom_box' ), 10, 2 );
-		add_action( 'save_post', array( &$this, 'save_post' ), 25 );
+		add_action( 'admin_footer', array( $this, 'admin_footer' ) );
+		add_action( 'bulk_edit_custom_box', array( $this, 'quick_edit_custom_box' ), 10, 2 );
+		add_action( 'quick_edit_custom_box', array( $this, 'quick_edit_custom_box' ), 10, 2 );
+		add_action( 'save_post', array( $this, 'save_post' ), 25 );
 		add_action( 'wp_ajax_save_post_bulk_edit', array( 'Custom_Bulkquick_Edit', 'save_post_bulk_edit' ) );
-		add_filter( 'plugin_action_links', array( &$this, 'plugin_action_links' ), 10, 2 );
-		add_filter( 'plugin_row_meta', array( &$this, 'plugin_row_meta' ), 10, 2 );
+		add_filter( 'plugin_action_links', array( $this, 'plugin_action_links' ), 10, 2 );
+		add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 2 );
 	}
 
 
@@ -131,7 +132,7 @@ EOD;
 
 
 	public function admin_notices_0_0_1() {
-		$content  = '<div class="updated"><p>';
+		$content  = '<div class="updated fade"><p>';
 		$content .= sprintf( __( 'If your Custom Bulk/Quick Edit display has gone to funky town, please <a href="%s">read the FAQ</a> about possible CSS fixes.', 'custom-bulkquick-edit' ), 'https://aihrus.zendesk.com/entries/23722573-Major-Changes-Since-2-10-0' );
 		$content .= '</p></div>';
 
@@ -140,7 +141,7 @@ EOD;
 
 
 	public function admin_notices_donate() {
-		$content  = '<div class="updated"><p>';
+		$content  = '<div class="updated fade"><p>';
 		$content .= sprintf( esc_html__( 'Please donate $2 towards development and support of this Custom Bulk/Quick Edit plugin. %s', 'custom-bulkquick-edit' ), self::$donate_button );
 		$content .= '</p></div>';
 
@@ -169,7 +170,7 @@ EOD;
 	/**
 	 *
 	 *
-	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
 	 */
 	public static function manage_posts_custom_column_precapture( $column, $post_id ) {
 		ob_start();
@@ -206,6 +207,11 @@ EOD;
 			$current = get_post_meta( $post_id, $column, true );
 
 			switch ( $field_type ) {
+			case 'input':
+			case 'textarea':
+				$result = $current;
+				break;
+
 			case 'checkbox':
 			case 'radio':
 				if ( ! is_array( $current ) )
@@ -249,12 +255,12 @@ EOD;
 				break;
 
 			default:
-				$result = $current;
+				$result = apply_filters( 'cbqe_manage_posts_custom_column_field_type', $current, $field_type, $column, $post_id );
 				break;
 			}
 		}
 
-		$result = apply_filters( 'custom_bulkquick_edit_posts_custom_column', $result, $column, $post_id );
+		$result = apply_filters( 'cbqe_posts_custom_column', $result, $column, $post_id );
 
 		if ( $result )
 			echo $result;
@@ -269,11 +275,14 @@ EOD;
 
 		$fields = self::get_enabled_fields( $post->post_type );
 		foreach ( $fields as $key => $field_name ) {
+			if ( false !== strstr( $field_name, Custom_Bulkquick_Edit_Settings::RESET ) )
+				continue;
+
 			$title                  = Custom_Bulkquick_Edit_Settings::$settings[ $key ]['label'];
 			$columns[ $field_name ] = $title;
 		}
 
-		$columns = apply_filters( 'custom_bulkquick_edit_columns', $columns );
+		$columns = apply_filters( 'cbqe_columns', $columns );
 
 		return $columns;
 	}
@@ -302,8 +311,16 @@ EOD;
 	public static function get_scripts() {
 		if ( empty( self::$scripts_called ) ) {
 			echo '
-				<script type="text/javascript">
+<script type="text/javascript">
 jQuery(document).ready(function($) {
+
+	';
+
+			$scripts = implode( "\n", self::$scripts_extra );
+			echo $scripts;
+
+			echo '
+
 	var wp_inline_edit = inlineEditPost.edit;
 	inlineEditPost.edit = function( id ) {
 		wp_inline_edit.apply( this, arguments );
@@ -334,19 +351,19 @@ jQuery(document).ready(function($) {
 
 		$.ajax({
 			url: ajaxurl,
-			type: "POST",
-			async: false,
-			cache: false,
-			data: {
-				action: "save_post_bulk_edit",
-				post_ids: post_ids,
-			';
+				type: "POST",
+				async: false,
+				cache: false,
+				data: {
+					action: "save_post_bulk_edit",
+					post_ids: post_ids,
+					';
 
 			$scripts = implode( ",\n", self::$scripts_bulk );
 			echo $scripts;
 
 			echo '
-			}
+				}
 		});
 	});
 });
@@ -406,6 +423,12 @@ jQuery(document).ready(function($) {
 			if ( ! $field_type )
 				continue;
 
+			if ( false !== strstr( $field_name, Custom_Bulkquick_Edit_Settings::RESET ) ) {
+				$taxonomy = str_replace( Custom_Bulkquick_Edit_Settings::RESET, '', $field_name );
+				wp_delete_object_term_relationships( $post_id, $taxonomy );
+				continue;
+			}
+
 			$value = stripslashes_deep( $value );
 			if ( ! in_array( $field_name, array( 'post_excerpt' ) ) ) {
 				update_post_meta( $post_id, $field_name, $value );
@@ -441,7 +464,7 @@ jQuery(document).ready(function($) {
 				'_builtin' => true,
 			);
 
-			$args = apply_filters( 'custom_bulkquick_edit_get_post_types_args', $args );
+			$args = apply_filters( 'cbqe_get_post_types_args', $args );
 
 			$post_types = get_post_types( $args, 'objects' );
 			foreach ( $post_types as $post_type ) {
@@ -522,9 +545,14 @@ jQuery(document).ready(function($) {
 		if ( empty( $field_type ) )
 			return;
 
+		if ( 'post_excerpt' == $column_name )
+			$field_type = 'textarea';
+		elseif ( false !== strstr( $column_name, Custom_Bulkquick_Edit_Settings::RESET ) )
+			$field_type = 'checkbox';
+
 		if ( self::$no_instance ) {
 			self::$no_instance = false;
-			wp_nonce_field( plugin_basename( __FILE__ ), self::ID );
+			wp_nonce_field( self::$base, self::ID );
 		}
 
 		$key            = self::get_field_key( $post_type, $column_name );
@@ -533,7 +561,7 @@ jQuery(document).ready(function($) {
 		$title          = Custom_Bulkquick_Edit_Settings::$settings[ $key ]['label'];
 
 		echo '
-			<fieldset class="inline-edit-col-right inline-edit-video">
+			<fieldset class="inline-edit-col-right inline-edit-video ' . $field_type . '">
 	  			<div class="inline-edit-col inline-edit-' . $column_name . '">
 		';
 
@@ -594,9 +622,13 @@ jQuery(document).ready(function($) {
 			echo $result;
 			break;
 
-		default:
 		case 'textarea':
 			echo '<textarea cols="22" rows="1" name="' . $field_name . '" autocomplete="off"></textarea>';
+			break;
+
+		default:
+			$result = apply_filters( 'cbqe_quick_edit_custom_box_field', '', $field_type, $field_name, $options );
+			echo $result;
 			break;
 		}
 
@@ -631,12 +663,17 @@ jQuery(document).ready(function($) {
 			self::$scripts_quick[ $column_name . '2' ] = "$( ':input[name={$field_name}] option[value=' + {$field_name_var} + ']', edit_row ).prop('selected', true);";
 			break;
 
-		default:
 		case 'input':
 		case 'textarea':
 			self::$scripts_bulk[ $column_name ]        = "'{$field_name}': bulk_row.find( '{$field_type}[name={$field_name}]' ).val()";
 			self::$scripts_quick[ $column_name . '1' ] = "var {$field_name_var} = $( '.column-{$column_name}', post_row ).text();";
 			self::$scripts_quick[ $column_name . '2' ] = "$( ':input[name={$field_name}]', edit_row ).val( {$field_name_var} );";
+			break;
+
+		default:
+			self::$scripts_bulk  = apply_filters( 'cbqe_quick_scripts_bulk', self::$scripts_bulk, $post_type, $column_name, $field_name, $field_type, $field_name_var );
+			self::$scripts_quick = apply_filters( 'cbqe_quick_scripts_quick', self::$scripts_quick, $post_type, $column_name, $field_name, $field_type, $field_name_var );
+			self::$scripts_extra = apply_filters( 'cbqe_quick_scripts_extra', self::$scripts_extra, $post_type, $column_name, $field_name, $field_type, $field_name_var );
 			break;
 		}
 	}
@@ -662,10 +699,10 @@ jQuery(document).ready(function($) {
 		if ( 'revision' == $post_type )
 			return;
 
-		if ( isset( $_POST[ self::ID ] ) && ! wp_verify_nonce( $_POST[ self::ID ], plugin_basename( __FILE__ ) ) )
+		if ( isset( $_POST[ self::ID ] ) && ! wp_verify_nonce( $_POST[ self::ID ], self::$base ) )
 			return;
 
-		remove_action( 'save_post', array( &$this, 'save_post' ), 25 );
+		remove_action( 'save_post', array( $this, 'save_post' ), 25 );
 		self::save_post_items( $post_id );
 	}
 
@@ -707,7 +744,11 @@ add_action( 'after_setup_theme', 'custom_bulkquick_edit_init', 999 );
  * @SuppressWarnings(PHPMD.UnusedLocalVariable)
  */
 function custom_bulkquick_edit_init() {
-	require_once ABSPATH . 'wp-admin/includes/plugin.php';
+	if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX )
+		if ( ! is_admin() )
+			return;
+
+		require_once ABSPATH . 'wp-admin/includes/plugin.php';
 	if ( is_plugin_active( Custom_Bulkquick_Edit::PLUGIN_FILE ) ) {
 		require_once 'lib/class-custom-bulkquick-edit-settings.php';
 
@@ -719,7 +760,6 @@ function custom_bulkquick_edit_init() {
 		if ( is_null( $Custom_Bulkquick_Edit_Settings ) )
 			$Custom_Bulkquick_Edit_Settings = new Custom_Bulkquick_Edit_Settings();
 	}
-
 }
 
 
