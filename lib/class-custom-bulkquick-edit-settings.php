@@ -45,7 +45,7 @@ class Custom_Bulkquick_Edit_Settings {
 		'title' => '',
 		'type' => 'text', // textarea, checkbox, radio, select, hidden, heading, password, expand_begin, expand_end
 		'validate' => '', // required, term, slug, slugs, ids, order, single paramater PHP functions
-		'widget' => 1, // show in widget options, 0 off
+		'has_config' => 0, // enable configuration hide for certain types
 	);
 	public static $defaults = array();
 	public static $sections = array();
@@ -125,7 +125,25 @@ class Custom_Bulkquick_Edit_Settings {
 		);
 		$as_types = apply_filters( 'cbqe_settings_as_types', $as_types );
 
-		$desc_excerpt = esc_html__( 'Enable editing %1$s "Excerpt".', 'custom-bulkquick-edit' );
+		$as_taxonomy = array(
+			'' => esc_html__( 'No', 'custom-bulkquick-edit' ),
+			'show_only' => esc_html__( 'No, but enable column view', 'custom-bulkquick-edit' ),
+			'categories' => esc_html__( 'Like categories', 'custom-bulkquick-edit' ),
+			'taxonomy' => esc_html__( 'Like tags', 'custom-bulkquick-edit' ),
+		);
+		$as_taxonomy = apply_filters( 'cbqe_settings_as_taxonomy', $as_taxonomy );
+
+		$desc_conf    = esc_html__( 'This configuration section is for option-based inputs like checkbox. You may create options formatted like "the-key|Supremely, Pretty Values" seperated by newlines.', 'custom-bulkquick-edit' );
+		$desc_edit    = esc_html__( 'Force making %1$s an editable taxonomy field like checked categories or free-text tags.', 'custom-bulkquick-edit' );
+		$desc_excerpt = esc_html__( 'Enable editing of %1$s\' excerpt.', 'custom-bulkquick-edit' );
+		$desc_remove  = esc_html__( 'During bulk editing, easily remove all of the %1$s\' prior relationships and add new.', 'custom-bulkquick-edit' );
+
+		$title_conf    = esc_html__( '%s Configuration', 'custom-bulkquick-edit' );
+		$title_edit    = esc_html__( 'Edit "%s" taxonomy?', 'custom-bulkquick-edit' );
+		$title_enable  = esc_html__( 'Enable "%s"?', 'custom-bulkquick-edit' );
+		$title_excerpt = esc_html__( 'Excerpt', 'custom-bulkquick-edit' );
+		$title_remove  = esc_html__( 'Reset "%s" Relations?', 'custom-bulkquick-edit' );
+
 		foreach ( self::$post_types as $post_type => $label ) {
 			$call_api = false;
 
@@ -133,8 +151,8 @@ class Custom_Bulkquick_Edit_Settings {
 			if ( $supports_excerpt ) {
 				self::$settings[ $post_type . self::ENABLE . 'post_excerpt' ] = array(
 					'section' => $post_type,
-					'title' => esc_html__( 'Enable "Excerpt"?', 'custom-bulkquick-edit' ),
-					'label' => esc_html__( 'Excerpt', 'custom-bulkquick-edit' ),
+					'title' => sprintf( $title_enable, $title_excerpt ),
+					'label' => $title_excerpt,
 					'desc' => sprintf( $desc_excerpt, $label ),
 					'type' => 'checkbox',
 				);
@@ -142,22 +160,30 @@ class Custom_Bulkquick_Edit_Settings {
 				$call_api = true;
 			}
 
-			$title = esc_html__( 'Remove "%s" Relations?', 'custom-bulkquick-edit' );
-			$desc  = esc_html__( 'Remove current "%1$s" relationships. You\'ll need to edit the "%2$s" again to set new "%3$s" entries.', 'custom-bulkquick-edit' );
-
-			$taxonomies = get_object_taxonomies( $post_type, 'objects' );
+			$taxonomy_name = array();
+			$taxonomies    = get_object_taxonomies( $post_type, 'objects' );
 			foreach ( $taxonomies as $taxonomy ) {
-				$tax_label = $taxonomy->label;
-				$name      = $taxonomy->name;
-
+				$name = $taxonomy->name;
 				if ( 'post_format' == $name )
 					continue;
 
-				self::$settings[ $post_type . self::ENABLE . self::RESET . $name ] = array(
+				$tax_label       = $taxonomy->label;
+				$taxonomy_name[] = $name;
+
+				self::$settings[ $post_type . self::ENABLE . $name ] = array(
 					'section' => $post_type,
-					'title' => sprintf( $title, $tax_label ),
-					'desc' => sprintf( $desc, $tax_label, $label, $tax_label ),
-					'label' => sprintf( $title, $tax_label ),
+					'title' => sprintf( $title_edit, $tax_label ),
+					'label' => $tax_label,
+					'desc' => sprintf( $desc_edit, $tax_label ),
+					'type' => 'select',
+					'choices' => $as_taxonomy,
+				);
+
+				self::$settings[ $post_type . self::ENABLE . $name . self::RESET ] = array(
+					'section' => $post_type,
+					'title' => sprintf( $title_remove, $tax_label ),
+					'label' => sprintf( $title_remove, $tax_label ),
+					'desc' => sprintf( $desc_remove, $tax_label ),
 					'type' => 'checkbox',
 				);
 
@@ -170,24 +196,67 @@ class Custom_Bulkquick_Edit_Settings {
 			$filter_edit = 'manage_edit-' . $post_type . '_columns';
 			$fields      = apply_filters( $filter_edit, $fields );
 			if ( ! empty( $fields ) ) {
-				$title   = esc_html__( 'Enable "%s"?', 'custom-bulkquick-edit' );
-				$details = esc_html__( '"%s" Configuration', 'custom-bulkquick-edit' );
+				// don't edit these common/static fields with this plugin
+				unset( $fields['author'] );
+				unset( $fields['cb'] );
+				unset( $fields['date'] );
+				unset( $fields['id'] );
+				unset( $fields['post_excerpt'] );
+
+				$doc = new DOMDocument();
 
 				foreach ( $fields as $field => $label ) {
+					$alt   = '';
+					$title = '';
+
+					// convert img to just alt/title tag
+					if ( false !== stristr( $label, '<img' ) ) {
+						$doc->loadHTML( $label );
+
+						$xpath   = new DOMXPath( $doc );
+						$results = $xpath->query( '//*[@alt]' );
+						foreach ( $results as $node )
+							$alt = $node->getAttribute( 'alt' );
+
+						if ( empty( $alt ) ) {
+							$results = $xpath->query( '//*[@title]' );
+							foreach ( $results as $node )
+								$title = $node->getAttribute( 'title' );
+
+							if ( empty( $title ) )
+								unset( $fields[ $field ] );
+							else
+								$fields[ $field ] = $title;
+						} else {
+							$fields[ $field ] = $alt;
+						}
+					}
+				}
+			}
+
+			if ( ! empty( $fields ) ) {
+				foreach ( $fields as $field => $label ) {
+					if ( in_array( $field, $taxonomy_name ) )
+						continue;
+
 					self::$settings[ $post_type . self::ENABLE . $field ] = array(
 						'section' => $post_type,
-						'title' => sprintf( $title, $label ),
+						'title' => sprintf( $title_enable, $label ),
 						'label' => $label,
 						'type' => 'select',
 						'choices' => $as_types,
+						'has_config' => 1,
 					);
+
+					$desc_conf_tmp = apply_filters( 'cbqe_settings_config_desc', $desc_conf, $post_type, $field );
 
 					self::$settings[ $post_type . self::ENABLE . $field . self::CONFIG ] = array(
 						'section' => $post_type,
-						'title' => sprintf( $details, $label ),
-						'desc' => esc_html__( 'This configuration section is only for use with checkbox, radio, and select modes. Please seperate options using newlines. You may create options as "the-key|Supremely, Pretty Values" pairs.', 'custom-bulkquick-edit' ),
+						'title' => sprintf( $title_conf, $label ),
 						'label' => $label,
+						'desc' => $desc_conf_tmp,
 						'type' => 'textarea',
+						'validate' => 'trim',
 					);
 				}
 
@@ -227,7 +296,6 @@ class Custom_Bulkquick_Edit_Settings {
 				'type' => 'readonly',
 				'desc' => esc_html__( 'These are your current settings in a serialized format. Copy the contents to make a backup of your settings.', 'custom-bulkquick-edit' ),
 				'std' => $serialized_options,
-				'widget' => 0,
 			);
 		}
 
@@ -236,7 +304,6 @@ class Custom_Bulkquick_Edit_Settings {
 			'title' => esc_html__( 'Import Settings', 'custom-bulkquick-edit' ),
 			'type' => 'textarea',
 			'desc' => esc_html__( 'Paste new serialized settings here to overwrite your current configuration.', 'custom-bulkquick-edit' ),
-			'widget' => 0,
 		);
 
 		self::$settings['delete_data'] = array(
@@ -245,7 +312,6 @@ class Custom_Bulkquick_Edit_Settings {
 			'type' => 'checkbox',
 			'class' => 'warning', // Custom class for CSS
 			'desc' => esc_html__( 'Delete all Custom Bulk/Quick Edit data and options from database on plugin deletion', 'custom-bulkquick-edit' ),
-			'widget' => 0,
 		);
 
 		self::$settings['reset_defaults'] = array(
@@ -254,14 +320,12 @@ class Custom_Bulkquick_Edit_Settings {
 			'type' => 'checkbox',
 			'class' => 'warning', // Custom class for CSS
 			'desc' => esc_html__( 'Check this box to reset options to their defaults', 'custom-bulkquick-edit' ),
-			'widget' => 0,
 		);
 
 		self::$settings = apply_filters( 'cbqe_settings', self::$settings );
 
-		foreach ( self::$settings as $id => $parts ) {
+		foreach ( self::$settings as $id => $parts )
 			self::$settings[ $id ] = wp_parse_args( $parts, self::$default );
-		}
 	}
 
 
@@ -317,7 +381,7 @@ class Custom_Bulkquick_Edit_Settings {
 
 
 	public function admin_menu() {
-		$admin_page = add_options_page( '', esc_html__( 'Custom Bulk/Quick', 'custom-bulkquick-edit' ), 'manage_options', self::ID, array( 'Custom_Bulkquick_Edit_Settings', 'display_page' ) );
+		$admin_page = add_options_page( esc_html__( 'Custom Bulk/Quick Settings', 'custom-bulkquick-edit' ), esc_html__( 'Custom Bulk/Quick', 'custom-bulkquick-edit' ), 'manage_options', self::ID, array( 'Custom_Bulkquick_Edit_Settings', 'display_page' ) );
 
 		add_action( 'admin_print_scripts-' . $admin_page, array( $this, 'scripts' ) );
 		add_action( 'admin_print_styles-' . $admin_page, array( $this, 'styles' ) );
@@ -343,6 +407,7 @@ class Custom_Bulkquick_Edit_Settings {
 			'choices' => $choices,
 			'label_for' => $id,
 			'class' => $class,
+			'has_config' => $has_config,
 		);
 
 		self::$defaults[$id] = $std;
@@ -376,9 +441,19 @@ class Custom_Bulkquick_Edit_Settings {
 		</div>
 		';
 
-		echo '
-			<p>If you like this plugin, please <a href="http://aihr.us/about-aihrus/donate/" title="Donate for Good Karma"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" border="0" alt="Donate for Good Karma" /></a> or <a href="http://aihr.us/downloads/custom-bulkquick-edit-premium-wordpress-plugin/" title="purchase Custom Bulk/Quick Edit Premium">purchase Custom Bulk/Quick Edit Premium</a> to help fund further development and <a href="http://wordpress.org/support/plugin/custom-bulkquick-edit" title="Support forums">support</a>.</p>
-		';
+
+		$disable_donate = cbqe_get_option( 'disable_donate' );
+		if ( ! $disable_donate ) {
+			echo '<p>' .
+				sprintf(
+				__( 'If you like this plugin, please <a href="%1$s" title="Donate for Good Karma"><img src="%2$s" border="0" alt="Donate for Good Karma" /></a> or <a href="%3$s" title="purchase Custom Bulk/Quick Edit Premium">purchase Custom Bulk/Quick Edit Premium</a> to help fund further development and <a href="%4$s" title="Support forums">support</a>.', 'custom-bulkquick-edit' ),
+				esc_url( 'http://aihr.us/about-aihrus/donate/' ),
+				esc_url( 'https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif' ),
+				esc_url( 'http://aihr.us/downloads/custom-bulkquick-edit-premium-wordpress-plugin/' ),
+				esc_url( 'https://aihrus.zendesk.com/categories/20112546-Custom-Bulk-Quick-Edit' )
+			) .
+				'</p>';
+		}
 
 		$text = esc_html__( 'Copyright &copy;%1$s %2$s.', 'custom-bulkquick-edit' );
 		$link = '<a href="http://aihr.us">Aihrus</a>';
@@ -434,12 +509,17 @@ class Custom_Bulkquick_Edit_Settings {
 	public function display_about_section() {
 		echo '
 			<div id="about" style="width: 70%; min-height: 225px;">
-				<p><img class="alignright size-medium" title="Michael in Red Square, Moscow, Russia" src="' . WP_PLUGIN_URL . '/custom-bulkquick-edit/media/michael-cannon-red-square-300x2251.jpg" alt="Michael in Red Square, Moscow, Russia" width="300" height="225" /><a href="http://wordpress.org/extend/plugins/custom-bulkquick-edit/">Custom Bulk/Quick Edit Settings</a> is by <a href="http://aihr.us/about-aihrus/michael-cannon-resume/">Michael Cannon</a>. He\'s <a title="Lot\'s of stuff about Peichi Liu…" href="http://peimic.com/t/peichi-liu/">Peichi’s</a> smiling man, an adventurous <a title="Water rat" href="http://www.chinesehoroscope.org/chinese_zodiac/rat/" target="_blank">water-rat</a>, <a title="Axelerant – Open Source. Engineered." href="http://axelerant.com/who-we-are">chief people officer</a>, <a title="Aihrus – website support made easy since 1999" href="http://aihr.us/about-aihrus/">chief technology officer</a>, <a title="Road biker, cyclist, biking; whatever you call, I love to ride" href="http://peimic.com/c/biking/">cyclist</a>, <a title="Michael\'s poetic like literary ramblings" href="http://peimic.com/t/poetry/">poet</a>, <a title="World Wide Opportunities on Organic Farms" href="http://peimic.com/t/WWOOF/">WWOOF’er</a> and <a title="My traveled to country list, is more than my age." href="http://peimic.com/c/travel/">world traveler</a>.</p>
+				<p><img class="alignright size-medium" title="Michael in Red Square, Moscow, Russia" src="' . WP_PLUGIN_URL . '/custom-bulkquick-edit/media/michael-cannon-red-square-300x2251.jpg" alt="Michael in Red Square, Moscow, Russia" width="300" height="225" /><a href="http://wordpress.org/extend/plugins/custom-bulkquick-edit/">Custom Bulk/Quick Edit Settings</a> is by <a href="http://aihr.us/about-aihrus/michael-cannon-resume/">Michael Cannon</a>. He\'s <a title="Lot\'s of stuff about Peichi Liu…" href="http://peimic.com/t/peichi-liu/">Peichi’s</a> smiling man, an adventurous <a title="Water rat" href="http://www.chinesehoroscope.org/chinese_zodiac/rat/" target="_blank">water-rat</a>, <a title="Axelerant – Open Source. Engineered." href="http://axelerant.com/who-we-are">chief people officer</a>, <a title="Road biker, cyclist, biking; whatever you call, I love to ride" href="http://peimic.com/c/biking/">cyclist</a>, <a title="Aihrus – website support made easy since 1999" href="http://aihr.us/about-aihrus/">full stack developer</a>, <a title="Michael\'s poetic like literary ramblings" href="http://peimic.com/t/poetry/">poet</a>, <a title="World Wide Opportunities on Organic Farms" href="http://peimic.com/t/WWOOF/">WWOOF’er</a> and <a title="My traveled to country list, is more than my age." href="http://peimic.com/c/travel/">world traveler</a>.</p>
 			</div>
 		';
 	}
 
 
+	/**
+	 *
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+	 */
 	public static function display_setting( $args = array(), $do_echo = true, $input = null ) {
 		$content = '';
 
@@ -561,6 +641,10 @@ class Custom_Bulkquick_Edit_Settings {
 			break;
 		}
 
+		// stick config show/hide javascript here
+		if ( $has_config )
+			$content .= '';
+
 		if ( ! $do_echo )
 			return $content;
 
@@ -602,7 +686,10 @@ class Custom_Bulkquick_Edit_Settings {
 
 
 	public function styles() {
-		wp_enqueue_style( 'jquery-style', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css' );
+		if ( ! is_ssl() )
+			wp_enqueue_style( 'jquery-style', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css' );
+		else
+			wp_enqueue_style( 'jquery-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css' );
 	}
 
 
@@ -639,7 +726,38 @@ class Custom_Bulkquick_Edit_Settings {
 		}
 
 		foreach ( $options as $id => $parts ) {
-			$default     = $parts['std'];
+			$default = $parts['std'];
+
+			// ensure default config
+			if ( strstr( $id, Custom_Bulkquick_Edit_Settings::CONFIG ) ) {
+				$config = $input[ $id ];
+				if ( empty( $config ) ) {
+					$field = str_replace( Custom_Bulkquick_Edit_Settings::CONFIG, '', $id );
+					$type  = $input[ $field ];
+					switch ( $type ) {
+					case 'checkbox';
+						$default = '1|' . esc_html__( 'Enable', 'custom-bulkquick-edit' );
+						break;
+
+					case 'radio';
+					case 'select';
+						$default  = '';
+						$default .= esc_html__( 'Yes', 'custom-bulkquick-edit' );
+						$default .= "\n";
+						$default .= 'no|' . esc_html__( 'No', 'custom-bulkquick-edit' );
+						$default .= "\n";
+						$default .= 'where-beef|' . esc_html__( 'Where\'s the beef?', 'custom-bulkquick-edit' );
+						break;
+
+					default:
+						$default = apply_filters( 'cbqe_configuration_default', $default, $id, $type );
+						break;
+					}
+
+					$input[ $id ] = $default ;
+				}
+			}
+
 			$type        = $parts['type'];
 			$validations = ! empty( $parts['validate'] ) ? $parts['validate'] : array();
 			if ( ! empty( $validations ) )
@@ -677,16 +795,6 @@ class Custom_Bulkquick_Edit_Settings {
 					self::validators( $validate, $id, $input, $default, $errors );
 			}
 		}
-
-		// same has_archive and rewrite_slug causes problems
-		if ( $input['has_archive'] == $input['rewrite_slug'] )
-			$input['rewrite_slug'] = $defaults['rewrite_slug'];
-
-		// did URL slugs change?
-		$has_archive  = cbqe_get_option( 'has_archive' );
-		$rewrite_slug = cbqe_get_option( 'rewrite_slug' );
-		if ( $has_archive != $input['has_archive'] || $rewrite_slug != $input['rewrite_slug'] )
-			flush_rewrite_rules();
 
 		$input['version']        = self::$version;
 		$input['donate_version'] = Custom_Bulkquick_Edit::VERSION;
@@ -756,6 +864,14 @@ class Custom_Bulkquick_Edit_Settings {
 		case 'term':
 			$input[ $id ] = self::validate_term( $input[ $id ], $default );
 			$input[ $id ] = strtolower( $input[ $id ] );
+			break;
+
+		case 'trim':
+			$options = explode( "\n", $input[ $id ] );
+			foreach ( $options as $key => $value )
+				$options[ $key ] = trim( $value );
+
+			$input[ $id ] = implode( "\n", $options );
 			break;
 
 		default:

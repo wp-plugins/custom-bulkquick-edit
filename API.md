@@ -4,9 +4,15 @@ The [Custom Bulk/Quick Edit plugin](http://wordpress.org/plugins/custom-bulkquic
 
 ## Actions
 
-None at this time.
+* `cbeq_save_post`
+
+	Custom save post handler. Called at end of `save_post`. Therefore, generally verified to do something if your `$_POST` parameters exist.
 
 ## Filters
+
+* `cbqe_post_types_ignore`
+
+	Customize the ignored post_types array. [Example](https://gist.github.com/michael-cannon/6987053)
 
 * `cbqe_quick_scripts_bulk`
 
@@ -24,6 +30,10 @@ None at this time.
 
 	Modify the field input types offered. [example](https://gist.github.com/michael-cannon/6333075)
 
+* `cbqe_settings_as_taxonomy`
+
+	Modify the field taxonomy types offered.
+
 * `cbqe_settings_display_setting`
 
 	Display the additional field input types offered. [example](https://gist.github.com/michael-cannon/6333132)
@@ -31,6 +41,14 @@ None at this time.
 * `cbqe_validate_settings`
 
 	Validate settings helper. [example](https://gist.github.com/michael-cannon/5833768)
+
+* `cbqe_configuration_default`
+
+	Validate settings default helper. [example](https://gist.github.com/michael-cannon/)
+
+* `cbqe_settings_config_desc`
+
+	Customize the configuration text. [example](https://gist.github.com/michael-cannon/)
 
 * `cbqe_version`
 
@@ -62,7 +80,7 @@ None at this time.
 	
 * `cbqe_quick_edit_custom_box_field`
 
-	Edit field contents by `field_type`. Has parameters `$field_type`, `$field_name`, and `$options`. [example](https://gist.github.com/michael-cannon/6490341)
+	Edit field contents by `field_type`. Has parameters `$field_type`, `$field_name`, `$options`, and `$bulk_mode`. [example](https://gist.github.com/michael-cannon/6490341)
 
 * `cbqe_get_post_types_args`
 	
