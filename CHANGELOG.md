@@ -2,6 +2,61 @@
 
 ## master
 
+## 1.1.0
+* Abstract bulk/quick input operations
+* Add API action `cbeq_save_post`
+* Add API action `custom_bulkquick_edit_update`
+* Add API filter `cbqe_configuration_default`
+* Add API filter `cbqe_post_types_ignore`
+* Add API filter `cbqe_settings_config_desc`
+* Add bulk_edit_custom_box to help with separating editable fields per edit view
+* Add disable donation option
+* Add trim validator to settings
+* Alter scripts_extra location
+* Auto-suggest for tag-based taxonomy during bulk and quick editing
+* BUGFIX Select No Change option missing
+* BUGFIX attributes with hyphens no populate or save in bulk/quick edit
+* BUGFIX category taxonomy saving incorrect
+* BUGFIX cbeq_save_post bulk edits not saving
+* BUGFIX field name has plugin prefix
+* BUGFIX incorrect multiple select HTML
+* BUGFIX multiple select quick edit not saving
+* BUGFIX show unset checkboxes during quick edit
+* BUGFIX show unset taxonomies during bulk edit
+* BUGFIX taxonomy CSV entries not treated as individual terms
+* Begin `has_config` coding to hide configuration textareas for unset options
+* Category bulk editing
+* Correct settings page title
+* Don't edit common/static fields like cb, id, author, etc.
+* Ignore checkbox and ID fields
+* Populate quick edit checkbox fields
+* Populate quick edit radio fields
+* Prevent extraneous options from showing in edit screen columns
+* Reduce echo calls
+* Refactor bulk/quick custom box operations
+* Refactor options labeling
+* Remove `cbqe_settings_as_category` filter
+* Remove auto-suggest and force reset options - now part of bulk operations by default
+* Rename field label with img tag to its alt or title attribute
+* Revise premium features list
+* Revise readme structure
+* Sample configurations provided on initial save
+* Save taxonomy data
+* Select category values during quick editing
+* Show unset category/taxonomy checkbox in bulk edit
+* Test checkbox, radio, and select with 0/1 options
+* Travis ignore WordPress.WhiteSpace.ControlStructureSpacing - false positives
+* Unset checkbox values
+* Unset radio values
+* Unset select values
+* Update API
+* Update FAQ
+* Update TODO
+* Update readme options
+* Use WordPress's own taxonomy handlers for category and tag inputs
+* View category and tag relations on edit screen columns
+* https jQuery transport
+
 ## 1.0.1
 * API updates
 * Add field_type identifier to edit screen fieldset

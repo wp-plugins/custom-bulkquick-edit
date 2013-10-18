@@ -2,10 +2,10 @@
 
 Contributors: comprock
 Donate link: http://aihr.us/about-aihrus/donate/
-Tags: custom, bulk edit, quick edit, custom post types
+Tags: custom, bulk edit, quick edit, custom post types, woocommerce
 Requires at least: 3.4
 Tested up to: 3.6.0
-Stable tag: 1.0.1
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,43 +23,56 @@ Custom Bulk/Quick Edit automatically detects custom fields that use the [manage_
 
 This plugin ties into the [bulk_edit_custom_box](http://codex.wordpress.org/Plugin_API/Action_Reference/bulk_edit_custom_box) and [quick_edit_custom_box](http://codex.wordpress.org/Plugin_API/Action_Reference/quick_edit_custom_box) actions.
 
-To use this Custom Bulk/Quick Edit plugin with custom post types, please purchase [Custom Bulk/Quick Edit Premium](http://aihr.us/downloads/custom-bulkquick-edit-premium-wordpress-plugin/).
-
-= Help Me, Help You =
-
-Do [let me know](http://wordpress.org/support/plugin/custom-bulkquick-edit) how well you're able to use this plugin or not. 
-
-This plugin grew out of the frustration of having to custom write this code for every client. It works best when the custom post types have already added columns to the edit screen via the [manage_{$post_type}_posts_columns](http://codex.wordpress.org/Plugin_API/Filter_Reference/manage_$post_type_posts_columns) filter.
-
-[Example](https://aihrus.zendesk.com/entries/24800411-How-do-I-add-custom-columns-).
-
-= Limitations =
-
-Unless the [manage_{$post_type}_posts_columns](http://codex.wordpress.org/Plugin_API/Filter_Reference/manage_$post_type_posts_columns) is already configured, your theme's `functions.php` file will have to modified to add custom field columns. See "[How do I add custom columns to my edit page?](https://aihrus.zendesk.com/entries/24800411-How-do-I-add-custom-columns-to-my-edit-page-)" for help.
+To use this Custom Bulk/Quick Edit plugin with custom post types, please purchase [Custom Bulk/Quick Edit Premium](http://aihr.us/downloads/custom-bulkquick-edit-premium-wordpress-plugin/). Read more of the premium features below.
 
 = Primary Features =
 
 * API of actions and filters
 * Auto detects most post custom fields
+* Auto-suggest for bulk and quick edit taxonomy entries
+* Easily remove or replace `category` and `taxonomy` relations
 * Edit excerpts
 * Performance minded – Plugin automatically loads when needed
-* Remove "`taxonomy`" Relations
-* Settings export/import
+* Prevents editing of common and static fields like cb, id, author, etc.
+* Sample configurations provided as needed
+* Save post handler can be customized for your needs.
+* Setting options export/import
 * Settings screen
+* Supports WordPress's own taxonomy handlers for category and tag relations
+* Unset checkbox, radio, and select values during bulk edit
+* View category and tag relations on edit screen columns
+
+= Custom Bulk/Quick Edit Premium Plugin Features =
+
+Custom Bulk/Quick Edit Premium adds onto the best WordPress bulk edit plugin there is, [Custom Bulk/Quick Edit](http://wordpress.org/extend/plugins/custom-bulkquick-edit/). Custom Bulk/Quick Edit Premium supports [custom post types and WooCommerce](https://aihr.us/custom-bulkquick-edit-premium/). Plus, it offers additional inputs options like date and multiple selects for use during bulk/quick edit operations.
+
+* Date input with date picker
+* Disable donate references
+* Flexible API
+* Multiple select selector
+* Works with Custom Post Types
+* Works with [WooCommerce product attributes](http://www.woothemes.com/woocommerce/)
+
+[Buy Custom Bulk/Quick Edit Premium](http://aihr.us/downloads/custom-bulkquick-edit-premium-wordpress-plugin/) plugin for WordPress.
 
 = Settings Options =
 
 **Post**
 
-* Enable excerpts? – Enable editing `post_type` "Excerpt".
-* Remove "`taxonomy`" Relations? – Remove current "`taxonomy`" relationships. You'll need to edit the "`post_type`" again to set new "`taxonomy`" entries.
+* Enable "Excerpt"? – Enable editing of post_type' excerpt.
+* Edit "TBD" taxonomy? – Force making TBD an editable taxonomy field like checked categories or free-text tags.
+	* No
+	* No, but enable column view (view the column on the admin edit screen)
+	* Like categories
+	* Like tags
+* Reset "taxonomy" Relations? – During bulk editing, easily remove all of the taxonomy's prior relationships and add new.
 * Enable "Custom Field"? - As checkbox, radio, select, text input, or textarea
-* "Custom Field" Configuration - This configuration section is only for use with checkbox, radio, and select modes. Please separate options using newlines. Further, you may create options as "the-key|Pretty Value" pairs.
+* "Custom Field" Configuration - This configuration section is for option-based inputs like checkbox. You may create options formatted like "the-key|Supremely, Pretty Values" seperated by newlines.
 	* Example configuration
 `1
 Two
 3|Three
-four|Four
+four|Four, and forty five
 five-five|55`
 
 **Compatibility & Reset**
@@ -78,6 +91,18 @@ five-five|55`
 You can translate this plugin into your own language if it's not done so already. The localization file `custom-bulkquick-edit.pot` can be found in the `languages` folder of this plugin. After translation, please [send the localized file](http://aihr.us/contact-aihrus/) to the plugin author.
 
 See the FAQ for further localization tips.
+
+= Help Me, Help You =
+
+Do [let me know](http://wordpress.org/support/plugin/custom-bulkquick-edit) how well you're able to use this plugin or not. 
+
+This plugin grew out of the frustration of having to custom write this code for every client. It works best when the custom post types have already added columns to the edit screen via the [manage_{$post_type}_posts_columns](http://codex.wordpress.org/Plugin_API/Filter_Reference/manage_$post_type_posts_columns) filter.
+
+[Example](https://aihrus.zendesk.com/entries/24800411-How-do-I-add-custom-columns-).
+
+= Limitations =
+
+Unless the [manage_{$post_type}_posts_columns](http://codex.wordpress.org/Plugin_API/Filter_Reference/manage_$post_type_posts_columns) is already configured, your theme's `functions.php` file will have to modified to add custom field columns. See "[How do I add custom columns to my edit page?](https://aihrus.zendesk.com/entries/24800411-How-do-I-add-custom-columns-to-my-edit-page-)" for help.
 
 = Support =
 
@@ -100,6 +125,14 @@ Kudos to [Alex Stone](http://eoionline.org) for documentation revisions.
 
 == Frequently Asked Questions ==
 
+= Most Common Resolutions =
+
+1. [How do I add custom columns to my edit page?](https://aihrus.zendesk.com/entries/24800411-How-do-I-add-custom-columns-to-my-edit-page-)
+1. [Where can I find working samples?](https://aihrus.zendesk.com/entries/27667723-Where-can-I-find-working-samples-)
+1. [How do you configure options?](https://aihrus.zendesk.com/entries/24911342-How-do-you-configure-options-)
+
+= Still Stuck? =
+
 Please visit the [Custom Bulk/Quick Edit Knowledge Base](https://aihrus.zendesk.com/categories/20112546-Custom-Bulk-Quick-Edit) for frequently asked questions, offering ideas, or getting support.
 
 
@@ -117,9 +150,9 @@ See [Changelog](https://github.com/michael-cannon/custom-bulk-quick-edit/blob/ma
 
 == Upgrade Notice ==
 
-= 0.0.1 =
+= 1.1.0 =
 
-* Initial release
+* Please review your settings as some option keys have changed. There's no auto-upgrade at this time.
 
 
 == Beta Testers Needed ==
