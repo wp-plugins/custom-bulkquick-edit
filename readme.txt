@@ -3,9 +3,9 @@
 Contributors: comprock
 Donate link: http://aihr.us/about-aihrus/donate/
 Tags: custom, bulk edit, quick edit, custom post types, woocommerce
-Requires at least: 3.4
-Tested up to: 3.6.0
-Stable tag: 1.1.0
+Requires at least: 3.6
+Tested up to: 3.8.0
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,7 +14,9 @@ Custom Bulk/Quick Edit plugin allows you to easily add previously defined custom
 
 == Description ==
 
-Custom Bulk/Quick Edit plugin allows you to easily add previously defined custom fields to the edit screen bulk and quick edit panels.
+Through Custom Bulk/Quick Edit, you have the option to edit post meta via text, checkbox, radio, select, and textarea inputs within Bulk Edit and Quick Edit screens. Further, you can enable editing of category and tag taxonomies that don't show up already. Next, taxnomony, checkbox, radio, and select fields have an option to be reset, as in remove current options during Bulk Editing. This is very helpful when you want to mass reset or remove information.
+
+To use this Custom Bulk/Quick Edit plugin with custom post types, please purchase [Custom Bulk/Quick Edit Premium](http://aihr.us/downloads/custom-bulkquick-edit-premium-wordpress-plugin/). Read more of the premium features below.
 
 [youtube http://www.youtube.com/watch?v=wd6munNz0gI]
 **[Video introduction](http://youtu.be/UXvzdlvIPtk)**
@@ -23,15 +25,13 @@ Custom Bulk/Quick Edit automatically detects custom fields that use the [manage_
 
 This plugin ties into the [bulk_edit_custom_box](http://codex.wordpress.org/Plugin_API/Action_Reference/bulk_edit_custom_box) and [quick_edit_custom_box](http://codex.wordpress.org/Plugin_API/Action_Reference/quick_edit_custom_box) actions.
 
-To use this Custom Bulk/Quick Edit plugin with custom post types, please purchase [Custom Bulk/Quick Edit Premium](http://aihr.us/downloads/custom-bulkquick-edit-premium-wordpress-plugin/). Read more of the premium features below.
-
 = Primary Features =
 
 * API of actions and filters
 * Auto detects most post custom fields
 * Auto-suggest for bulk and quick edit taxonomy entries
 * Easily remove or replace `category` and `taxonomy` relations
-* Edit excerpts
+* Edit excerpts and titles
 * Performance minded – Plugin automatically loads when needed
 * Prevents editing of common and static fields like cb, id, author, etc.
 * Sample configurations provided as needed
@@ -41,6 +41,7 @@ To use this Custom Bulk/Quick Edit plugin with custom post types, please purchas
 * Supports WordPress's own taxonomy handlers for category and tag relations
 * Unset checkbox, radio, and select values during bulk edit
 * View category and tag relations on edit screen columns
+* Works with [Edit Flow](http://wordpress.org/plugins/edit-flow/)'s checkbox, location, paragraph, and text types
 
 = Custom Bulk/Quick Edit Premium Plugin Features =
 
@@ -59,6 +60,7 @@ Custom Bulk/Quick Edit Premium adds onto the best WordPress bulk edit plugin the
 
 **Post**
 
+* Enable "Title"? – Enable editing of post_type' title.
 * Enable "Excerpt"? – Enable editing of post_type' excerpt.
 * Edit "TBD" taxonomy? – Force making TBD an editable taxonomy field like checked categories or free-text tags.
 	* No
@@ -66,8 +68,8 @@ Custom Bulk/Quick Edit Premium adds onto the best WordPress bulk edit plugin the
 	* Like categories
 	* Like tags
 * Reset "taxonomy" Relations? – During bulk editing, easily remove all of the taxonomy's prior relationships and add new.
-* Enable "Custom Field"? - As checkbox, radio, select, text input, or textarea
-* "Custom Field" Configuration - This configuration section is for option-based inputs like checkbox. You may create options formatted like "the-key|Supremely, Pretty Values" seperated by newlines.
+* Enable "Custom Field"? - As checkbox, radio, select, input, or textarea
+* "Custom Field" Configuration - You may create options formatted like "the-key|Supremely, Pretty Values" seperated by newlines.
 	* Example configuration
 `1
 Two

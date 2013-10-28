@@ -3,7 +3,7 @@
  * Plugin Name: Custom Bulk/Quick Edit
  * Plugin URI: http://wordpress.org/extend/plugins/custom-bulkquick-edit/
  * Description: Custom Bulk/Quick Edit plugin allows you to easily add previously defined custom fields to the edit screen bulk and quick edit panels.
- * Version: 1.1.0
+ * Version: 1.2.0
  * Author: Michael Cannon
  * Author URI: http://aihr.us/about-aihrus/michael-cannon-resume/
  * License: GPLv2 or later
@@ -26,7 +26,7 @@
 class Custom_Bulkquick_Edit {
 	const ID          = 'custom-bulkquick-edit';
 	const PLUGIN_FILE = 'custom-bulkquick-edit/custom-bulkquick-edit.php';
-	const VERSION     = '1.1.0';
+	const VERSION     = '1.2.0';
 
 	private static $base              = null;
 	private static $fields_enabled    = array();
@@ -36,6 +36,7 @@ class Custom_Bulkquick_Edit {
 		'page',
 	);
 
+	public static $bulk_edit_save  = false;
 	public static $bulk_only_done  = false;
 	public static $donate_button   = '';
 	public static $field_key       = 'cbqe_';
@@ -147,7 +148,7 @@ EOD;
 
 	public function admin_notices_donate() {
 		$content  = '<div class="updated fade"><p>';
-		$content .= sprintf( esc_html__( 'Please donate $2 towards development and support of this Custom Bulk/Quick Edit plugin. %s', 'custom-bulkquick-edit' ), self::$donate_button );
+		$content .= sprintf( esc_html__( 'Please donate $5 towards development and support of this Custom Bulk/Quick Edit plugin. %s', 'custom-bulkquick-edit' ), self::$donate_button );
 		$content .= '</p></div>';
 
 		echo $content;
@@ -208,6 +209,10 @@ EOD;
 		switch ( $column ) {
 		case 'post_excerpt':
 			$result = $post->post_excerpt;
+			break;
+
+		case 'post_title':
+			$result = $post->post_title;
 			break;
 
 		default:
@@ -405,6 +410,8 @@ jQuery(document).ready(function($) {
 	 * @SuppressWarnings(PHPMD.ExitExpression)
 	 */
 	public function save_post_bulk_edit() {
+		self::$bulk_edit_save = true;
+
 		$post_ids = ! empty( $_POST[ 'post_ids' ] ) ? $_POST[ 'post_ids' ] : array();
 		if ( ! empty( $post_ids ) && is_array( $post_ids ) ) {
 			foreach ( $post_ids as $post_id ) {
@@ -497,7 +504,7 @@ jQuery(document).ready(function($) {
 			return;
 		}
 
-		if ( ! in_array( $field_name, array( 'post_category', 'post_excerpt' ) ) ) {
+		if ( ! in_array( $field_name, array( 'post_category', 'post_excerpt', 'post_title' ) ) ) {
 			$reset_string = ! is_array( $value ) ? strstr( $value, Custom_Bulkquick_Edit_Settings::RESET ) : false;
 			$reset_array  = is_array( $value ) ? in_array( Custom_Bulkquick_Edit_Settings::RESET, $value ) : false;
 			if ( ! $reset_string && ! $reset_array )
@@ -685,9 +692,12 @@ jQuery(document).ready(function($) {
 			// return now otherwise taxonomy entries are duplicated
 			if ( in_array( $field_type, array( 'categories', 'taxonomy' ) ) )
 				return;
+		} else {
+			if ( in_array( $column_name, array( 'post_title' ) ) )
+				return;
 		}
 
-		if ( 'post_excerpt' == $column_name )
+		if ( in_array( $column_name, array( 'post_excerpt', 'post_title' ) ) )
 			$field_type = 'textarea';
 
 		if ( self::$no_instance ) {
@@ -806,6 +816,9 @@ jQuery(document).ready(function($) {
 	public static function custom_box_radio( $column_name, $field_name, $field_name_var, $options ) {
 		$result = '<div class="inline-edit-group">';
 
+		$unset_option = Custom_Bulkquick_Edit_Settings::RESET . '|' . esc_html__( '&mdash; Unset &mdash;', 'custom-bulkquick-edit' );
+		array_unshift( $options, $unset_option );
+
 		foreach ( $options as $option ) {
 			$result .= '<label class="alignleft">';
 
@@ -847,14 +860,14 @@ jQuery(document).ready(function($) {
 		}
 
 		$result .= '">';
-		if ( ! $bulk_mode ) {
-			if ( ! $multiple )
-				$result .= '<option></option>';
-		} else
-			if ( ! $multiple )
-				$result .= '<option value="">' . esc_html__( '&mdash; No Change &mdash;', 'custom-bulkquick-edit' ) . '</option>';
 
-			$result .= '<option value="' . Custom_Bulkquick_Edit_Settings::RESET . '">' . esc_html__( '&mdash; Unset &mdash;', 'custom-bulkquick-edit' ) . '</option>';
+		$unset_option = Custom_Bulkquick_Edit_Settings::RESET . '|' . esc_html__( '&mdash; Unset &mdash;', 'custom-bulkquick-edit' );
+		array_unshift( $options, $unset_option );
+
+		if ( $bulk_mode && ! $multiple ) {
+			$no_change_option = '|' . esc_html__( '&mdash; No Change &mdash;', 'custom-bulkquick-edit' );
+			array_unshift( $options, $no_change_option );
+		}
 
 		foreach ( $options as $option ) {
 			$parts = explode( '|', $option );
@@ -910,13 +923,6 @@ jQuery(document).ready(function($) {
 		if ( false !== strstr( $field_name, '-' ) ) {
 			self::$scripts_quick[ $column_name . '1' ] = "var {$field_name_var} = $( '.column-{$column_name}', post_row ).text();";
 			self::$scripts_quick[ $column_name . '2' ] = "$( '.{$tax_class}', edit_row ).val( {$field_name_var} );";
-
-			/* BUG see TODO
-			$ajax_url   = site_url() . '/wp-admin/admin-ajax.php';
-			$suggest_js = "suggest( '{$ajax_url}?action=ajax-tag-search&tax={$taxonomy}', { delay: 500, minchars: 2, multiple: true, multipleSep: inlineEditL10n.comma + ' ' } )";
-
-			self::$scripts_quick[ $column_name . '3' ] = "$( '.{$tax_class}', edit_row ).{$suggest_js};";
-			*/
 		}
 
 		return $result;
