@@ -4,7 +4,7 @@ The [Custom Bulk/Quick Edit plugin](http://wordpress.org/plugins/custom-bulkquic
 
 ## Actions
 
-* `cbeq_save_post`
+* `cbqe_save_post`
 
 	Custom save post handler. Called at end of `save_post`. Therefore, generally verified to do something if your `$_POST` parameters exist.
 
@@ -93,6 +93,22 @@ The [Custom Bulk/Quick Edit plugin](http://wordpress.org/plugins/custom-bulkquic
 * `cbqe_get_post_types_args`
 	
 	Alter `get_post_types` arguments for loading post types. [example](https://gist.github.com/michael-cannon/6490357)
+
+* `cbqe_ignore_quick_edit`
+
+	Ignore editing of these fields for the quick edit panel.
+
+* `cbqe_edit_field_type`
+
+	Alter editing type of fields for the bulk and quick edit panels.
+
+* `cbqe_post_save_fields`
+
+	Designate fields to be saved to post entry directly than postmeta.
+
+* `cbqe_post_save_value`
+
+	Compute post value to be saved based upon given field_name.
 
 ## Need More?
 
