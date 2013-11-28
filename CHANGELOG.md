@@ -2,6 +2,9 @@
 
 ## master
 
+## 1.3.1
+* BUGFIX tw_get_option function not found
+
 ## 1.3.0
 * $this to __CLASS__
 * Abstract manage_posts_custom_column subroutines for easier reuse
