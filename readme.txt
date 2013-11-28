@@ -5,7 +5,7 @@ Donate link: http://aihr.us/about-aihrus/donate/
 Tags: custom, bulk edit, quick edit, custom post types, woocommerce
 Requires at least: 3.6
 Tested up to: 3.8.0
-Stable tag: 1.2.0
+Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -42,6 +42,7 @@ This plugin ties into the [bulk_edit_custom_box](http://codex.wordpress.org/Plug
 * Unset checkbox, radio, and select values during bulk edit
 * View category and tag relations on edit screen columns
 * Works with [Edit Flow](http://wordpress.org/plugins/edit-flow/)'s checkbox, location, paragraph, and text types
+* Works with posts and pages
 
 = Custom Bulk/Quick Edit Premium =
 
@@ -57,6 +58,9 @@ Custom Bulk/Quick Edit Premium adds onto the best WordPress bulk edit plugin the
 * Works with Custom Post Types
 * Works with [Edit Flow](http://wordpress.org/plugins/edit-flow/) date, number, and user types
 * Works with [WooCommerce product attributes](http://www.woothemes.com/woocommerce/)
+
+= Add Ons =
+* [WordPress SEO](https://aihr.us/products/wordpress-seo-custom-bulkquick-edit-premium/) - Modify WordPress SEO options via bulk and quick edit panels
 
 [Buy Custom Bulk/Quick Edit Premium](http://aihr.us/downloads/custom-bulkquick-edit-premium-wordpress-plugin/) plugin for WordPress.
 
@@ -93,6 +97,8 @@ five-five|55`
 * Read the [Custom Bulk/Quick Edit API](https://github.com/michael-cannon/custom-bulkquick-edit/blob/master/API.md).
 
 = Languages =
+
+* Serbo-Croatian by [Borisa Djuraskovic](borisad@webhostinghub.com)
 
 You can translate this plugin into your own language if it's not done so already. The localization file `custom-bulkquick-edit.pot` can be found in the `languages` folder of this plugin. After translation, please [send the localized file](http://aihr.us/contact-aihrus/) to the plugin author.
 
