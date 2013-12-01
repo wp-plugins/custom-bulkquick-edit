@@ -2,6 +2,10 @@
 
 ## master
 
+## 1.3.2
+* Add filter `cbqe_settings_taxonomies`
+* BUGFIX No label taxnomies included in settings
+
 ## 1.3.1
 * BUGFIX tw_get_option function not found
 
