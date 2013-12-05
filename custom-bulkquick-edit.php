@@ -3,7 +3,7 @@
  * Plugin Name: Custom Bulk/Quick Edit
  * Plugin URI: http://wordpress.org/plugins/custom-bulkquick-edit/
  * Description: Custom Bulk/Quick Edit plugin allows you to easily add previously defined custom fields to the edit screen bulk and quick edit panels.
- * Version: 1.3.2
+ * Version: 1.3.3
  * Author: Michael Cannon
  * Author URI: http://aihr.us/resume/
  * License: GPLv2 or later
@@ -31,13 +31,18 @@ if ( ! defined( 'CBQE_PLUGIN_DIR_LIB' ) )
 
 require_once CBQE_PLUGIN_DIR_LIB . '/aihrus/class-aihrus-common.php';
 
+if ( af_php_version_check( __FILE__ ) )
+	add_action( 'after_setup_theme', 'custom_bulkquick_edit_init', 999 );
+else
+	return;
+
 
 class Custom_Bulkquick_Edit extends Aihrus_Common {
 	const ID          = 'custom-bulkquick-edit';
 	const ITEM_NAME   = 'Custom Bulk/Quick Edit';
 	const PLUGIN_BASE = 'custom-bulkquick-edit/custom-bulkquick-edit.php';
 	const SLUG        = 'cbqe_';
-	const VERSION     = '1.3.2';
+	const VERSION     = '1.3.3';
 
 	private static $fields_enabled    = array();
 	private static $no_instance       = true;
@@ -1111,9 +1116,6 @@ jQuery( document ).ready( function() {
 register_activation_hook( __FILE__, array( 'Custom_Bulkquick_Edit', 'activation' ) );
 register_deactivation_hook( __FILE__, array( 'Custom_Bulkquick_Edit', 'deactivation' ) );
 register_uninstall_hook( __FILE__, array( 'Custom_Bulkquick_Edit', 'uninstall' ) );
-
-
-add_action( 'after_setup_theme', 'custom_bulkquick_edit_init', 999 );
 
 
 /**

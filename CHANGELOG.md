@@ -2,6 +2,9 @@
 
 ## master
 
+## 1.3.3
+* Check for PHP 5.3
+
 ## 1.3.2
 * Add filter `cbqe_settings_taxonomies`
 * BUGFIX No label taxnomies included in settings
