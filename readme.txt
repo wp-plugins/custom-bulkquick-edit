@@ -5,7 +5,7 @@ Donate link: http://aihr.us/about-aihrus/donate/
 Tags: custom, bulk edit, quick edit, custom post types, woocommerce
 Requires at least: 3.6
 Tested up to: 3.8.0
-Stable tag: 1.3.3
+Stable tag: 1.3.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -47,7 +47,7 @@ This plugin ties into the [bulk_edit_custom_box](http://codex.wordpress.org/Plug
 * Works with posts and pages
 
 = Add Ons =
-* [Edit Flow](https://aihr.us/products/edit-flow-custom-bulkquick-edit/) date, number, and user types
+* [Edit Flow](https://aihr.us/products/edit-flow-custom-bulkquick-edit/) - Date, number, and user types
 * [WordPress SEO](https://aihr.us/products/wordpress-seo-custom-bulkquick-edit-premium/) - Modify WordPress SEO options via bulk and quick edit panels
 
 = Custom Bulk/Quick Edit Premium =
@@ -157,6 +157,9 @@ Please visit the [Custom Bulk/Quick Edit Knowledge Base](https://aihrus.zendesk.
 2. TwentyTwelve theme with Posts Post Excerpts enabled
 3. Posts Quick Edit with excerpts
 4. Posts Bulk Edit with excerpts
+
+[gallery]
+
 
 == Changelog ==
 
