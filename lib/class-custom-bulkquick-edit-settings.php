@@ -22,16 +22,18 @@
  * Based upon http://alisothegeek.com/2011/01/wordpress-settings-api-tutorial-1/
  */
 
+if ( class_exists( 'Custom_Bulkquick_Edit_Settings' ) )
+	return;
 
-require_once CBQE_PLUGIN_DIR_LIB . '/aihrus/class-aihrus-settings.php';
+require_once CBQE_DIR_LIB . '/aihrus/class-aihrus-settings.php';
 
 
 class Custom_Bulkquick_Edit_Settings extends Aihrus_Settings {
-	const CONFIG    = '__config__';
-	const ENABLE    = '__enable__';
-	const ID        = 'custom-bulkquick-edit-settings';
-	const ITEM_NAME = 'Custom Bulk/Quick Edit Settings';
-	const RESET     = '__reset__';
+	const CONFIG = '__config__';
+	const ENABLE = '__enable__';
+	const ID     = 'custom-bulkquick-edit-settings';
+	const NAME   = 'Custom Bulk/Quick Edit Settings';
+	const RESET  = '__reset__';
 
 	private static $post_types = array();
 
@@ -170,8 +172,14 @@ class Custom_Bulkquick_Edit_Settings extends Aihrus_Settings {
 				);
 			}
 
+			$fields = array();
+			if ( 'page' != $post_type )
+				$filter = 'manage_posts_columns';
+			else
+				$filter = 'manage_pages_columns';
+
+			$fields      = apply_filters( $filter, $fields );
 			$filter      = 'manage_' . $post_type . '_posts_columns';
-			$fields      = array();
 			$fields      = apply_filters( $filter, $fields );
 			$filter_edit = 'manage_edit-' . $post_type . '_columns';
 			$fields      = apply_filters( $filter_edit, $fields );
@@ -252,7 +260,7 @@ class Custom_Bulkquick_Edit_Settings extends Aihrus_Settings {
 				add_action( $action, array( 'Custom_Bulkquick_Edit', 'manage_posts_custom_column_capture' ), 199, 2 );
 			}
 
-			add_filter( $filter, array( 'Custom_Bulkquick_Edit', 'manage_posts_columns' ), 199 );
+			add_filter( $filter, array( 'Custom_Bulkquick_Edit', 'manage_columns' ), 199 );
 		}
 
 		parent::settings();
