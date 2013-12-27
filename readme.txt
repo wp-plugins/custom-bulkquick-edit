@@ -4,8 +4,8 @@ Contributors: comprock
 Donate link: http://aihr.us/about-aihrus/donate/
 Tags: custom, bulk edit, quick edit, custom post types, woocommerce
 Requires at least: 3.6
-Tested up to: 3.8.0
-Stable tag: 1.3.4
+Tested up to: 3.9.0
+Stable tag: 1.4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -140,7 +140,7 @@ five-five|55`
 	* Select plugins for update, click "Update Plugins"
 * Using FTP
 	* Download and unzip [`custom-bulkquick-edit.zip`](http://downloads.wordpress.org/plugin/custom-bulkquick-edit.zip) locally
-	* FTP, upload directory `custom-bulkquick-edit` to your website's `/wp-content/plugins/` directory
+	* Upload directory `custom-bulkquick-edit` to your website's `/wp-content/plugins/` directory
 	* Be sure to overwrite your existing `custom-bulkquick-edit` folder contents
 
 

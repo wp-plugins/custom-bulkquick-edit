@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name: Custom Bulk/Quick Edit
+ * Plugin Name: Custom Bulk/Quick Edit by Aihrus
  * Plugin URI: http://wordpress.org/plugins/custom-bulkquick-edit/
- * Description: Custom Bulk/Quick Edit plugin allows you to easily add previously defined custom fields to the edit screen bulk and quick edit panels.
- * Version: 1.3.4
+ * Description: Custom Bulk/Quick Edit by Aihrus allows you to easily add custom fields to the edit screen bulk and quick edit panels.
+ * Version: 1.4.0
  * Author: Michael Cannon
  * Author URI: http://aihr.us/resume/
  * License: GPLv2 or later
@@ -23,26 +23,30 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
-if ( ! defined( 'CBQE_PLUGIN_DIR' ) )
-	define( 'CBQE_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 
-if ( ! defined( 'CBQE_PLUGIN_DIR_LIB' ) )
-	define( 'CBQE_PLUGIN_DIR_LIB', CBQE_PLUGIN_DIR . '/lib' );
+define( 'CBQE_AIHR_VERSION', '1.0.0' );
+define( 'CBQE_BASE', plugin_basename( __FILE__ ) );
+define( 'CBQE_DIR', plugin_dir_path( __FILE__ ) );
+define( 'CBQE_DIR_LIB', CBQE_DIR . '/lib' );
+define( 'CBQE_NAME', 'Custom Bulk/Quick Edit by Aihrus' );
+define( 'CBQE_PREMIUM_LINK', '<a href="https://aihr.us/products/custom-bulkquick-edit-premium-wordpress-plugin/">Purchase Custom Bulk/Quick Edit Premium</a>' );
+define( 'CBQE_VERSION', '1.4.0' );
 
-require_once CBQE_PLUGIN_DIR_LIB . '/aihrus/class-aihrus-common.php';
+require_once CBQE_DIR_LIB . '/requirements.php';
 
-if ( af_php_version_check( __FILE__ ) )
-	add_action( 'after_setup_theme', 'custom_bulkquick_edit_init', 999 );
-else
-	return;
+if ( ! cbqe_requirements_check() ) {
+	return false;
+}
+
+require_once CBQE_DIR_LIB . '/aihrus/class-aihrus-common.php';
+require_once CBQE_DIR_LIB . '/class-custom-bulkquick-edit-settings.php';
 
 
 class Custom_Bulkquick_Edit extends Aihrus_Common {
-	const ID          = 'custom-bulkquick-edit';
-	const ITEM_NAME   = 'Custom Bulk/Quick Edit';
-	const PLUGIN_BASE = 'custom-bulkquick-edit/custom-bulkquick-edit.php';
-	const SLUG        = 'cbqe_';
-	const VERSION     = '1.3.4';
+	const BASE    = CBQE_BASE;
+	const ID      = 'custom-bulkquick-edit';
+	const SLUG    = 'cbqe_';
+	const VERSION = CBQE_VERSION;
 
 	private static $fields_enabled    = array();
 	private static $no_instance       = true;
@@ -64,6 +68,8 @@ class Custom_Bulkquick_Edit extends Aihrus_Common {
 
 
 	public function __construct() {
+		parent::__construct();
+
 		add_action( 'admin_init', array( __CLASS__, 'admin_init' ) );
 		add_action( 'init', array( __CLASS__, 'init' ) );
 	}
@@ -90,7 +96,7 @@ class Custom_Bulkquick_Edit extends Aihrus_Common {
 
 
 	public static function plugin_action_links( $links, $file ) {
-		if ( self::PLUGIN_BASE == $file )
+		if ( self::BASE == $file )
 			array_unshift( $links, self::$settings_link );
 
 		return $links;
@@ -106,8 +112,6 @@ class Custom_Bulkquick_Edit extends Aihrus_Common {
 	public static function deactivation() {
 		if ( ! current_user_can( 'activate_plugins' ) )
 			return;
-
-		Custom_Bulkquick_Edit::delete_notices();
 	}
 
 
@@ -117,7 +121,8 @@ class Custom_Bulkquick_Edit extends Aihrus_Common {
 
 		global $wpdb;
 
-		require_once CBQE_PLUGIN_DIR_LIB . '/class-custom-bulkquick-edit-settings.php';
+		require_once CBQE_DIR_LIB . '/class-custom-bulkquick-edit-settings.php';
+
 		$delete_data = cbqe_get_option( 'delete_data', false );
 		if ( $delete_data ) {
 			delete_option( Custom_Bulkquick_Edit_Settings::ID );
@@ -127,7 +132,7 @@ class Custom_Bulkquick_Edit extends Aihrus_Common {
 
 
 	public static function plugin_row_meta( $input, $file ) {
-		if ( self::PLUGIN_BASE != $file )
+		if ( self::BASE != $file )
 			return $input;
 
 		$disable_donate = cbqe_get_option( 'disable_donate' );
@@ -136,8 +141,11 @@ class Custom_Bulkquick_Edit extends Aihrus_Common {
 
 		$links = array(
 			self::$donate_link,
-			'<a href="http://aihr.us/downloads/custom-bulkquick-edit-premium-wordpress-plugin/">Purchase Custom Bulk/Quick Edit Premium</a>',
 		);
+
+		global $Custom_Bulkquick_Edit_Premium;
+		if ( ! isset( $Custom_Bulkquick_Edit_Premium ) )
+			$links[] = CBQE_PREMIUM_LINK;
 
 		$input = array_merge( $input, $links );
 
@@ -148,14 +156,14 @@ class Custom_Bulkquick_Edit extends Aihrus_Common {
 	public static function notice_0_0_1() {
 		$text = sprintf( __( 'If your Custom Bulk/Quick Edit display has gone to funky town, please <a href="%s">read the FAQ</a> about possible CSS fixes.', 'custom-bulkquick-edit' ), 'https://aihrus.zendesk.com/entries/23722573-Major-Changes-Since-2-10-0' );
 
-		self::notice_updated( $text );
+		aihr_notice_updated( $text );
 	}
 
 
 	public static function notice_donate( $disable_donate = null, $item_name = null ) {
 		$disable_donate = cbqe_get_option( 'disable_donate' );
 
-		parent::notice_donate( $disable_donate, self::ITEM_NAME );
+		parent::notice_donate( $disable_donate, CBQE_NAME );
 	}
 
 
@@ -174,7 +182,7 @@ class Custom_Bulkquick_Edit extends Aihrus_Common {
 		// display donate on major/minor version release
 		$donate_version = cbqe_get_option( 'donate_version', false );
 		if ( ! $donate_version || ( $donate_version != self::VERSION && preg_match( '#\.0$#', self::VERSION ) ) ) {
-			add_action( 'admin_notices', array( __CLASS__, 'notice_donate' ) );
+			self::set_notice( 'notice_donate' );
 			cbqe_set_option( 'donate_version', self::VERSION );
 		}
 	}
@@ -259,7 +267,7 @@ class Custom_Bulkquick_Edit extends Aihrus_Common {
 	}
 
 
-	public static function manage_posts_columns( $columns ) {
+	public static function manage_columns( $columns ) {
 		global $post;
 
 		if ( is_null( $post ) )
@@ -626,6 +634,10 @@ jQuery( document ).ready( function() {
 		$open_fieldset  = '<fieldset class="inline-edit-col-%1$s %2$s">';
 
 		if ( $bulk_mode ) {
+			$ignore_bulk_edit = apply_filters( 'cbqe_ignore_bulk_edit', array() );
+			if ( in_array( $column_name, $ignore_bulk_edit ) )
+				return;
+
 			if ( empty( self::$bulk_only_done ) ) {
 				$result   = '';
 				$row      = 1;
@@ -672,7 +684,7 @@ jQuery( document ).ready( function() {
 
 		if ( self::$no_instance ) {
 			self::$no_instance = false;
-			wp_nonce_field( self::PLUGIN_BASE, self::ID );
+			wp_nonce_field( self::BASE, self::ID );
 		}
 
 		$field_name_var = str_replace( '-', '_', $field_name );
@@ -965,7 +977,7 @@ jQuery( document ).ready( function() {
 		if ( 'revision' == $post_type )
 			return;
 
-		if ( isset( $_POST[ self::ID ] ) && ! wp_verify_nonce( $_POST[ self::ID ], self::PLUGIN_BASE ) )
+		if ( isset( $_POST[ self::ID ] ) && ! wp_verify_nonce( $_POST[ self::ID ], self::BASE ) )
 			return;
 
 		remove_action( 'save_post', array( __CLASS__, 'save_post' ), 25 );
@@ -1071,11 +1083,7 @@ jQuery( document ).ready( function() {
 
 
 	public static function version_check() {
-		require_once ABSPATH . 'wp-admin/includes/plugin.php';
-
 		$good_version = true;
-		if ( ! is_plugin_active( self::PLUGIN_BASE ) )
-			$good_version = false;
 
 		return $good_version;
 	}
@@ -1118,6 +1126,9 @@ register_deactivation_hook( __FILE__, array( 'Custom_Bulkquick_Edit', 'deactivat
 register_uninstall_hook( __FILE__, array( 'Custom_Bulkquick_Edit', 'uninstall' ) );
 
 
+add_action( 'after_setup_theme', 'custom_bulkquick_edit_init', 999 );
+
+
 /**
  *
  *
@@ -1125,21 +1136,18 @@ register_uninstall_hook( __FILE__, array( 'Custom_Bulkquick_Edit', 'uninstall' )
  * @SuppressWarnings(PHPMD.UnusedLocalVariable)
  */
 function custom_bulkquick_edit_init() {
-	if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX )
-		if ( ! is_admin() )
-			return;
+	if ( ! is_admin() && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) )
+		return;
 
-		if ( Custom_Bulkquick_Edit::version_check() ) {
-			require_once CBQE_PLUGIN_DIR_LIB . '/class-custom-bulkquick-edit-settings.php';
+	if ( Custom_Bulkquick_Edit::version_check() ) {
+		global $Custom_Bulkquick_Edit;
+		if ( is_null( $Custom_Bulkquick_Edit ) )
+			$Custom_Bulkquick_Edit = new Custom_Bulkquick_Edit();
 
-			global $Custom_Bulkquick_Edit;
-			if ( is_null( $Custom_Bulkquick_Edit ) )
-				$Custom_Bulkquick_Edit = new Custom_Bulkquick_Edit();
-
-			global $Custom_Bulkquick_Edit_Settings;
-			if ( is_null( $Custom_Bulkquick_Edit_Settings ) )
-				$Custom_Bulkquick_Edit_Settings = new Custom_Bulkquick_Edit_Settings();
-		}
+		global $Custom_Bulkquick_Edit_Settings;
+		if ( is_null( $Custom_Bulkquick_Edit_Settings ) )
+			$Custom_Bulkquick_Edit_Settings = new Custom_Bulkquick_Edit_Settings();
+	}
 }
 
 
