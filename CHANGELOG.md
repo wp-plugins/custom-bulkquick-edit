@@ -2,6 +2,10 @@
 
 ## master
 
+## 1.4.1
+* Use strip_protocol to help prevent non-SSL path issues
+* Use Aihrus Framework 1.0.1
+
 ## 1.4.0
 * Add filter cbqe_ignore_bulk_edit
 * Always include settings class
