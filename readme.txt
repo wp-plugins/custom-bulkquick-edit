@@ -5,7 +5,7 @@ Donate link: http://aihr.us/about-aihrus/donate/
 Tags: custom, bulk edit, quick edit, custom post types, woocommerce
 Requires at least: 3.6
 Tested up to: 3.9.0
-Stable tag: 1.4.1
+Stable tag: 1.5.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -18,7 +18,7 @@ Through Custom Bulk/Quick Edit [by Aihrus](http://aihr.us/about-aihrus/), you ha
 
 To use this Custom Bulk/Quick Edit plugin with custom post types, please purchase [Custom Bulk/Quick Edit Premium](http://aihr.us/downloads/custom-bulkquick-edit-premium-wordpress-plugin/). Read more of the premium features below.
 
-[youtube http://www.youtube.com/watch?v=wd6munNz0gI]
+[youtube https://www.youtube.com/watch?v=wd6munNz0gI]
 
 **[Video introduction](http://youtu.be/UXvzdlvIPtk)**
 
@@ -182,6 +182,10 @@ See [Changelog](https://github.com/michael-cannon/custom-bulk-quick-edit/blob/ma
 
 == Upgrade Notice ==
 
+= 1.5.0 =
+
+* Alters option `active_plugins` so that this plugin is among first loaded.
+
 = 1.3.0 =
 
 * Requires PHP 5.3+ [notice](https://aihrus.zendesk.com/entries/30678006)
@@ -208,7 +212,8 @@ This plugin grew out of the frustration of having to custom write this code for 
 
 == Localization ==
 
-* Serbo-Croatian by [Borisa Djuraskovic](borisad@webhostinghub.com)
+* Spanish translation by [Andrew Kurtis from WebHostingHub](http://www.webhostinghub.com)
+* Serbo-Croatian translation by [Borisa Djuraskovic](borisad@webhostinghub.com)
 
 You can translate this plugin into your own language if it's not done so already. The localization file `custom-bulkquick-edit.pot` can be found in the `languages` folder of this plugin. After translation, please [send the localized file](http://aihr.us/contact-aihrus/) for plugin inclusion.
 

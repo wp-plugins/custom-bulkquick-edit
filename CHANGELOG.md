@@ -2,6 +2,23 @@
 
 ## master
 
+## 1.5.0
+* Alters option `active_plugins` so that this plugin is among first loaded unless premium is active
+* Check for definitions before defining
+* Move main class to own class file
+* Require Aihrus Framework 1.0.3
+* RESOLVE #2 Abstract bulk/quick edit panel layout
+* RESOLVE Incorrect About tab plugin URL
+* RESOLVE PHP Notice:  Undefined variable: errors
+* Settings plugin_path to plugin_assets
+* Spanish by [Andrew Kurtis](andrewk@webhostinghub.com)
+* Specify a “Text Domain” and “Domain Path”
+* Update file structure
+* Use Codeship.io than Travis CI
+* Use http product URL
+* Use YouTube https
+* Verbiage tweaks
+
 ## 1.4.1
 * Use strip_protocol to help prevent non-SSL path issues
 * Use Aihrus Framework 1.0.1

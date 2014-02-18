@@ -1,0 +1,9 @@
+fieldset.cbqe {
+	clear: both;
+}
+fieldset.cbqe label span.title {
+	width: 10em;
+}
+.inline-edit-group.cbqe label {
+	clear: both;
+}
