@@ -1,6 +1,6 @@
 <?php
 /*
-	Copyright 2013 Michael Cannon (email: mc@aihr.us)
+	Copyright 2014 Michael Cannon (email: mc@aihr.us)
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License, version 2, as
@@ -22,7 +22,7 @@
  * Based upon http://alisothegeek.com/2011/01/wordpress-settings-api-tutorial-1/
  */
 
-require_once CBQE_DIR_LIB . 'aihrus-framework/class-aihrus-settings.php';
+require_once AIHR_DIR_INC . 'class-aihrus-settings.php';
 
 if ( class_exists( 'Custom_Bulkquick_Edit_Settings' ) )
 	return;
@@ -33,6 +33,7 @@ class Custom_Bulkquick_Edit_Settings extends Aihrus_Settings {
 	const ENABLE = '__enable__';
 	const ID     = 'custom-bulkquick-edit-settings';
 	const NAME   = 'Custom Bulk/Quick Edit Settings';
+	const REMOVE = '__remove__';
 	const RESET  = '__reset__';
 
 	private static $post_types = array();
@@ -111,18 +112,26 @@ class Custom_Bulkquick_Edit_Settings extends Aihrus_Settings {
 		);
 		$as_taxonomy = apply_filters( 'cbqe_settings_as_taxonomy', $as_taxonomy );
 
-		$desc_conf    = esc_html__( 'You may create options formatted like "the-key|Supremely, Pretty Values" seperated by newlines.', 'custom-bulkquick-edit' );
-		$desc_edit    = esc_html__( 'Force making %1$s an editable taxonomy field like checked categories or free-text tags.', 'custom-bulkquick-edit' );
-		$desc_excerpt = esc_html__( 'Enable editing of %1$s\' excerpt.', 'custom-bulkquick-edit' );
-		$desc_remove  = esc_html__( 'During bulk editing, easily remove all of the %1$s\' prior relationships and add new.', 'custom-bulkquick-edit' );
-		$desc_title   = esc_html__( 'Enable bulk editing of %1$s\' title.', 'custom-bulkquick-edit' );
+		$title_conf = esc_html__( '%s Configuration', 'custom-bulkquick-edit' );
+		$desc_conf  = esc_html__( 'You may create options formatted like "the-key|Supremely, Pretty Values" seperated by newlines.', 'custom-bulkquick-edit' );
 
-		$title_conf    = esc_html__( '%s Configuration', 'custom-bulkquick-edit' );
-		$title_edit    = esc_html__( 'Edit "%s" taxonomy?', 'custom-bulkquick-edit' );
-		$title_enable  = esc_html__( 'Enable "%s"?', 'custom-bulkquick-edit' );
+		$title_edit = esc_html__( 'Edit "%s" taxonomy?', 'custom-bulkquick-edit' );
+		$desc_edit  = esc_html__( 'Force making %1$s an editable taxonomy field like checked categories or free-text tags.', 'custom-bulkquick-edit' );
+
+		$title_enable = esc_html__( 'Enable "%s"?', 'custom-bulkquick-edit' );
+
 		$title_excerpt = esc_html__( 'Excerpt', 'custom-bulkquick-edit' );
-		$title_title   = esc_html__( 'Title', 'custom-bulkquick-edit' );
-		$title_remove  = esc_html__( 'Reset "%s" Relations?', 'custom-bulkquick-edit' );
+		$desc_excerpt  = esc_html__( 'Enable editing of %1$s\' excerpt.', 'custom-bulkquick-edit' );
+
+		$title_remove = esc_html__( 'Reset "%s" Relations?', 'custom-bulkquick-edit' );
+		$desc_remove  = esc_html__( 'During bulk editing, easily remove all of the %1$s\' prior relationships and add new.', 'custom-bulkquick-edit' );
+
+		$title_selective_rm = esc_html__( 'Remove Selected "%s" Relations?', 'custom-bulkquick-edit' );
+		$label_selective_rm = esc_html__( 'Remove Selected "%s" Relations', 'custom-bulkquick-edit' );
+		$desc_selective_rm  = esc_html__( 'During bulk editing, easily remove selected %1$s\' relationships.', 'custom-bulkquick-edit' );
+
+		$title_title = esc_html__( 'Title', 'custom-bulkquick-edit' );
+		$desc_title  = esc_html__( 'Enable bulk editing of %1$s\' title.', 'custom-bulkquick-edit' );
 
 		foreach ( self::$post_types as $post_type => $label ) {
 			self::$settings[ $post_type . self::ENABLE . 'post_title' ] = array(
@@ -149,8 +158,9 @@ class Custom_Bulkquick_Edit_Settings extends Aihrus_Settings {
 			$taxonomies    = apply_filters( 'cbqe_settings_taxonomies', $taxonomies );
 			foreach ( $taxonomies as $taxonomy ) {
 				$name = $taxonomy->name;
-				if ( 'post_format' == $name || empty( $taxonomy->label ) )
+				if ( 'post_format' == $name || empty( $taxonomy->label ) ) {
 					continue;
+				}
 
 				$tax_label       = $taxonomy->label;
 				$taxonomy_name[] = $name;
@@ -164,6 +174,14 @@ class Custom_Bulkquick_Edit_Settings extends Aihrus_Settings {
 					'choices' => $as_taxonomy,
 				);
 
+				self::$settings[ $post_type . self::ENABLE . $name . self::REMOVE ] = array(
+					'section' => $post_type,
+					'title' => sprintf( $title_selective_rm, $tax_label ),
+					'label' => sprintf( $label_selective_rm, $tax_label ),
+					'desc' => sprintf( $desc_selective_rm, $tax_label ),
+					'type' => 'checkbox',
+				);
+
 				self::$settings[ $post_type . self::ENABLE . $name . self::RESET ] = array(
 					'section' => $post_type,
 					'title' => sprintf( $title_remove, $tax_label ),
@@ -174,10 +192,11 @@ class Custom_Bulkquick_Edit_Settings extends Aihrus_Settings {
 			}
 
 			$fields = array();
-			if ( 'page' != $post_type )
+			if ( 'page' != $post_type ) {
 				$filter = 'manage_posts_columns';
-			else
+			} else {
 				$filter = 'manage_pages_columns';
+			}
 
 			$fields      = apply_filters( $filter, $fields );
 			$filter      = 'manage_' . $post_type . '_posts_columns';
@@ -210,13 +229,15 @@ class Custom_Bulkquick_Edit_Settings extends Aihrus_Settings {
 
 						if ( empty( $alt ) ) {
 							$results = $xpath->query( '//*[@title]' );
-							foreach ( $results as $node )
+							foreach ( $results as $node ) {
 								$title = $node->getAttribute( 'title' );
+							}
 
-							if ( empty( $title ) )
+							if ( empty( $title ) ) {
 								unset( $fields[ $field ] );
-							else
+							} else {
 								$fields[ $field ] = $title;
+							}
 						} else {
 							$fields[ $field ] = $alt;
 						}
@@ -226,8 +247,9 @@ class Custom_Bulkquick_Edit_Settings extends Aihrus_Settings {
 
 			if ( ! empty( $fields ) ) {
 				foreach ( $fields as $field => $label ) {
-					if ( in_array( $field, $taxonomy_name ) )
+					if ( in_array( $field, $taxonomy_name ) ) {
 						continue;
+					}
 
 					self::$settings[ $post_type . self::ENABLE . $field ] = array(
 						'section' => $post_type,
@@ -267,8 +289,9 @@ class Custom_Bulkquick_Edit_Settings extends Aihrus_Settings {
 		parent::settings();
 
 		self::$settings = apply_filters( 'cbqe_settings', self::$settings );
-		foreach ( self::$settings as $id => $parts )
+		foreach ( self::$settings as $id => $parts ) {
 			self::$settings[ $id ] = wp_parse_args( $parts, self::$default );
+		}
 	}
 
 

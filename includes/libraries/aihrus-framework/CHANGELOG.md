@@ -2,6 +2,50 @@
 
 ## master
 
+## 1.1.4
+* Carry over core baseline methods
+
+## 1.1.3
+* Add check_user_role method
+* RESOLVE michael-cannon/testimonials-widget#85 New testimonial rating field is blank
+* RESOLVE Undefined index notice
+
+## 1.1.2
+* Add licensing status notices
+* Code formatting
+* Don't remove license from settings
+* RESOLVE Undefined index
+* Restore default wp_remote_get timeout
+* Return if library class exists already
+* Update settings page detection
+
+## 1.1.1
+* Remove unused `widget_options`
+* RESOLVE michael-cannon/testimonials-widget#65 Widget blank options aren't saving correctly
+
+## 1.1.0
+* Abstract deactivate_plugins actual to aihr_deactivate_plugin_do
+* Add class redrokk_metabox_class
+* Add class wp_custom_post_status
+* Add date, time, and datetime types to redrokk_metabox_class
+* Add rich_editor type
+* Add validate_email
+* Consolidate deactivate_plugins activity into aihr_deactivate_plugin
+* Don't esc_attr rich editor value
+* Limit wp_custom_post_status to post type
+* Move classes/interfaces to includes
+* Register `jquery-style`
+* Rename requirements.php to aihrus-framework.php
+* RESOLVE michael-cannon/testimonials-widget#63 Unable to activate premium license
+* RESOLVE michael-cannon/testimonials-widget#65 Widget blank options aren't saving correctly
+* RESOLVE michael-cannon/testimonials-widget#76 Undefined index: hide_image_single
+* RESOLVE redrokk_metabox_class prepare warning
+* Revise get_styles handling
+* Set AIHR_DIR* helpers
+* Set defaults for validators
+* Set premium license key for 2 years though it expires at 1
+* Update copyright year
+
 ## 1.0.3
 * RESOLVE Fatal error: Call to undefined function add_settings_error() in class-aihrus-settings.php on line 559
 * RESOLVE Featured image via Gravatar not saving correctly
