@@ -2,6 +2,23 @@
 
 ## master
 
+## 1.5.1
+* Link to old plugin versions in FAQ
+* Remove remove/reset field alignment
+* Require Aihrus Framework 1.1.4
+* RESOLVES #35 make a small comment line above the attributes quick edit boxes to prevent people using ","
+* RESOLVES #37 Support attributes (and also customs)
+* RESOLVES #39 Custom field value of "0" isn't displayed in the columns
+* RESOLVES #41 Add option to remove specific category and tag entries
+* RESOLVES #42 Taxonomy reset options not showing in bulk edit
+* RESOLVES Duplicate fields in bulk edit
+* RESOLVES Tag based taxonomies selections not showing in quick edit
+* Revise FAQ section
+* Revise readme layout
+* Swap remove and reset setting locations
+* Update copyright
+* Update readme for premium features
+
 ## 1.5.0
 * Alters option `active_plugins` so that this plugin is among first loaded unless premium is active
 * Check for definitions before defining

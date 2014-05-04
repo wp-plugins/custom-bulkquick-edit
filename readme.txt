@@ -5,7 +5,7 @@ Donate link: http://aihr.us/about-aihrus/donate/
 Tags: custom, bulk edit, quick edit, custom post types, woocommerce
 Requires at least: 3.6
 Tested up to: 3.9.0
-Stable tag: 1.5.0
+Stable tag: 1.5.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -22,19 +22,19 @@ To use this Custom Bulk/Quick Edit plugin with custom post types, please purchas
 
 **[Video introduction](http://youtu.be/UXvzdlvIPtk)**
 
-Custom Bulk/Quick Edit automatically detects custom fields that use the [manage_{$post_type}_posts_columns](http://codex.wordpress.org/Plugin_API/Filter_Reference/manage_$post_type_posts_columns) filter to display additional columns on the edit screen. Therefore, unless it's already configured, your theme's `functions.php` file will have to modified to add custom field columns.
+Custom Bulk/Quick Edit automatically detects custom fields that use the [manage_{$post_type}_posts_columns](http://codex.wordpress.org/Plugin_API/Filter_Reference/manage_$post_type_posts_columns) filter to display additional columns on the edit screen. **Therefore, unless it's already configured, your theme's `functions.php` file will have to modified to add custom field columns.**
 
 Read [**Installation**](http://wordpress.org/plugins/custom-bulkquick-edit/installation/) and [**FAQ**](http://wordpress.org/plugins/custom-bulkquick-edit/faq/) to get started.
 
 = Primary Features =
 
 * API of actions and filters
-* Auto detects most post custom fields
 * Auto-suggest for bulk and quick edit taxonomy entries
 * Easily remove or replace `category` and `taxonomy` relations
 * Edit excerpts and titles
 * Performance minded – Plugin automatically loads when needed
 * Prevents editing of common and static fields like cb, id, author, etc.
+* Remove specific category and tag entries
 * Sample configurations provided as needed
 * Save post handler can be customized for your needs.
 * Setting options export/import
@@ -42,16 +42,16 @@ Read [**Installation**](http://wordpress.org/plugins/custom-bulkquick-edit/insta
 * Supports WordPress's own taxonomy handlers for category and tag relations
 * Unset checkbox, radio, and select values during bulk edit
 * View category and tag relations on edit screen columns
-* Works with [Edit Flow](http://wordpress.org/plugins/edit-flow/)'s checkbox, location, paragraph, and text types
 * Works with posts and pages
+* Works with [Edit Flow](http://wordpress.org/plugins/edit-flow/)'s checkbox, location, paragraph, and text types
 
 = Add Ons =
 * [Edit Flow](http://wordpress.org/plugins/cbqe-edit-flow/) - Date (Premium required), number, and user types
-* [WordPress SEO](https://aihr.us/products/wordpress-seo-custom-bulkquick-edit-premium/) - Modify WordPress SEO options via bulk and quick edit panels
+* [WordPress SEO](http://aihr.us/downloads/wordpress-seo-custom-bulkquick-edit/) - Modify WordPress SEO options via bulk and quick edit panels
 
 = Custom Bulk/Quick Edit Premium =
 
-Custom Bulk/Quick Edit Premium adds onto the best WordPress bulk edit plugin there is, [Custom Bulk/Quick Edit](http://wordpress.org/extend/plugins/custom-bulkquick-edit/). Custom Bulk/Quick Edit Premium supports [custom post types and WooCommerce](https://aihr.us/custom-bulkquick-edit-premium/). Plus, it offers additional inputs options like date and multiple selects for use during bulk/quick edit operations.
+Custom Bulk/Quick Edit Premium adds onto the best WordPress bulk edit plugin there is, [Custom Bulk/Quick Edit](http://wordpress.org/extend/plugins/custom-bulkquick-edit/). Custom Bulk/Quick Edit Premium supports [custom post types](https://aihr.us/custom-bulkquick-edit-premium/). Plus, it offers additional inputs options like date and multiple selects for use during bulk/quick edit operations.
 
 [Buy Custom Bulk/Quick Edit Premium](http://aihr.us/downloads/custom-bulkquick-edit-premium-wordpress-plugin/) plugin for WordPress.
 
@@ -60,17 +60,18 @@ Custom Bulk/Quick Edit Premium adds onto the best WordPress bulk edit plugin the
 * Adds float, integer, and user inputs
 * Bulk edit post dates
 * Color input with color picker
+* Coming Soon! [WooCommerce product attributes](http://www.woothemes.com/woocommerce/)
 * Date and time input with datetime picker
 * Date input with date picker
 * Disable donate references
 * Flexible API
 * Multiple select selector
 * Works with Custom Post Types
-* Works with [WooCommerce product attributes](http://www.woothemes.com/woocommerce/)
+* Works with [WooCommerce custom attributes and product types](http://www.woothemes.com/woocommerce/)
 
 [Buy Custom Bulk/Quick Edit Premium](http://aihr.us/downloads/custom-bulkquick-edit-premium-wordpress-plugin/) plugin for WordPress.
 
-= Settings Options =
+= Settings =
 
 **Post**
 
@@ -81,7 +82,8 @@ Custom Bulk/Quick Edit Premium adds onto the best WordPress bulk edit plugin the
 	* No, but enable column view (view the column on the admin edit screen)
 	* Like categories
 	* Like tags
-* Reset "taxonomy" Relations? – During bulk editing, easily remove all of the taxonomy's prior relationships and add new.
+* Reset "TBD" Relations? – During bulk editing, easily remove all of the TBD's prior relationships and add new.
+* Enable "Date"? – Enable bulk editing of post_type' date
 * Enable "Custom Field"? - As checkbox, radio, select, input, or textarea
 * "Custom Field" Configuration - You may create options formatted like "the-key|Supremely, Pretty Values" seperated by newlines.
 	* Example configuration
@@ -91,7 +93,11 @@ Two
 four|Four, and forty five
 five-five|55`
 
-**Compatibility & Reset**
+**Pages**
+
+See Post.
+
+**Reset**
 
 * Export Settings – These are your current settings in a serialized format. Copy the contents to make a backup of your settings.
 * Import Settings – Paste new serialized settings here to overwrite your current configuration.
@@ -153,16 +159,17 @@ five-five|55`
 * [How do I add custom columns to my edit page?](https://aihrus.zendesk.com/entries/24800411)
 * [How do you configure options?](https://aihrus.zendesk.com/entries/24911342)
 * [Where can I find working samples?](https://aihrus.zendesk.com/entries/27667723)
-* Got `Parse error: syntax error, unexpected T_STATIC, expecting ')'`? Read [Most Aihrus Plugins Require PHP 5.3+](https://aihrus.zendesk.com/entries/30678006) for the fixes.
-* [Debug common theme and plugin conflicts](https://aihrus.zendesk.com/entries/25119302)
+* Got `Parse error: syntax error, unexpected T_STATIC…`? See [Most Aihrus Plugins Require PHP 5.3+](https://aihrus.zendesk.com/entries/30678006)
+* [Debug theme and plugin conflicts](https://aihrus.zendesk.com/entries/25119302)
 
 = Still Stuck or Want Something Done? Get Support! =
 
-1. [Custom Bulk/Quick Edit Knowledge Base](https://aihrus.zendesk.com/categories/20112546) - read and comment upon frequently asked questions
-1. [Open Custom Bulk/Quick Edit Issues](https://github.com/michael-cannon/custom-bulkquick-edit/issues) - review and submit bug reports and enhancement requests
-1. [Custom Bulk/Quick Edit Support on WordPress](http://wordpress.org/support/plugin/custom-bulkquick-edit) - ask questions and review responses
-1. [Contribute Code to Custom Bulk/Quick Edit](https://github.com/michael-cannon/custom-bulkquick-edit/blob/master/CONTRIBUTING.md)
-1. [Beta Testers Needed](http://aihr.us/become-beta-tester/) - get the latest Custom Bulk/Quick Edit version
+1. [Knowledge Base](https://aihrus.zendesk.com/categories/20112546) - read and comment upon frequently asked questions
+1. [Open Issues](https://github.com/michael-cannon/custom-bulkquick-edit/issues) - review and submit bug reports and enhancement requests
+1. [Support on WordPress](http://wordpress.org/support/plugin/custom-bulkquick-edit) - ask questions and review responses
+1. [Contribute Code](https://github.com/michael-cannon/custom-bulkquick-edit/blob/master/CONTRIBUTING.md)
+1. [Beta Testers Needed](http://aihr.us/become-beta-tester/) - provide feedback and direction to plugin development
+1. [Old Plugin Versions](http://wordpress.org/plugins/custom-bulkquick-edit/developers/)
 
 
 == Screenshots ==
