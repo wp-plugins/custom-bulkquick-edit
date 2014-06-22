@@ -4,8 +4,8 @@ Contributors: comprock
 Donate link: http://aihr.us/about-aihrus/donate/
 Tags: custom, bulk edit, quick edit, custom post types, woocommerce
 Requires at least: 3.6
-Tested up to: 3.9.0
-Stable tag: 1.5.1
+Tested up to: 4.0.0
+Stable tag: 1.5.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -18,9 +18,9 @@ Through Custom Bulk/Quick Edit [by Aihrus](http://aihr.us/about-aihrus/), you ha
 
 To use this Custom Bulk/Quick Edit plugin with custom post types, please purchase [Custom Bulk/Quick Edit Premium](http://aihr.us/downloads/custom-bulkquick-edit-premium-wordpress-plugin/). Read more of the premium features below.
 
-[youtube https://www.youtube.com/watch?v=wd6munNz0gI]
+**Video Introduction**
 
-**[Video introduction](http://youtu.be/UXvzdlvIPtk)**
+[youtube https://www.youtube.com/watch?v=wd6munNz0gI]
 
 Custom Bulk/Quick Edit automatically detects custom fields that use the [manage_{$post_type}_posts_columns](http://codex.wordpress.org/Plugin_API/Filter_Reference/manage_$post_type_posts_columns) filter to display additional columns on the edit screen. **Therefore, unless it's already configured, your theme's `functions.php` file will have to modified to add custom field columns.**
 
@@ -158,6 +158,7 @@ See Post.
 
 * [How do I add custom columns to my edit page?](https://aihrus.zendesk.com/entries/24800411)
 * [How do you configure options?](https://aihrus.zendesk.com/entries/24911342)
+* [Extra columns on edit page](https://aihrus.zendesk.com/entries/23711542)
 * [Where can I find working samples?](https://aihrus.zendesk.com/entries/27667723)
 * Got `Parse error: syntax error, unexpected T_STATIC…`? See [Most Aihrus Plugins Require PHP 5.3+](https://aihrus.zendesk.com/entries/30678006)
 * [Debug theme and plugin conflicts](https://aihrus.zendesk.com/entries/25119302)
