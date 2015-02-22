@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2014 Michael Cannon (email: mc@aihr.us)
+ * Copyright 2015 Michael Cannon (email: mc@aihr.us)
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License, version 2, as
  * published by the Free Software Foundation.
@@ -232,8 +232,9 @@ class Custom_Bulkquick_Edit extends Aihrus_Common {
 			return;
 		}
 
-		if ( 1 == $field_type )
+		if ( 1 == $field_type ) {
 			$field_type = self::check_field_type( $field_type, $column );
+		}
 
 		$details = self::get_field_config( $post->post_type, $column );
 		$options = explode( "\n", $details );
@@ -249,7 +250,13 @@ class Custom_Bulkquick_Edit extends Aihrus_Common {
 				break;
 
 			default:
+				$save_as = self::get_field_save_as( $post->post_type, $column );
 				$current = get_post_meta( $post_id, $column, true );
+				if ( 'post_meta' == $save_as ) {
+					$current = get_post_meta( $post_id, $column );
+				} elseif ( 'csv' == $save_as ) {
+					$current = explode( ',', $current );
+				}
 
 				switch ( $field_type ) {
 					case 'categories':
@@ -320,6 +327,10 @@ class Custom_Bulkquick_Edit extends Aihrus_Common {
 			}
 
 			if ( false !== strstr( $key, Custom_Bulkquick_Edit_Settings::CONFIG ) ) {
+				continue;
+			}
+
+			if ( false !== strstr( $key, Custom_Bulkquick_Edit_Settings::SAVE ) ) {
 				continue;
 			}
 
@@ -448,7 +459,7 @@ jQuery( document ).ready( function() {
 			$fields = self::get_enabled_fields( $post_type );
 			foreach ( $fields as $key => $field ) {
 				$field_type = self::is_field_enabled( $post_type, $field );
-				if ( 'checkbox' == $field_type ) {
+				if ( self::is_field_checkbox( $field_type ) ) {
 					$field_name = self::SLUG . $field;
 					if ( ! isset( $_POST[ $field_name ] ) ) {
 						$_POST[ $field_name ] = Custom_Bulkquick_Edit_Settings::RESET;
@@ -530,10 +541,29 @@ jQuery( document ).ready( function() {
 			$delete     = true;
 		}
 
+		if ( $value == Custom_Bulkquick_Edit_Settings::RESET ) {
+			$delete = true;
+		}
+
 		$post_save_fields = apply_filters( 'cbqe_post_save_fields', self::$post_fields_ignore );
 		if ( ! in_array( $field_name, $post_save_fields ) ) {
 			if ( ! $delete ) {
-				update_post_meta( $post_id, $field_name, $value );
+				$save_as = self::get_field_save_as( $post_type, $field_name );
+				$updated = false;
+				if ( 'post_meta' == $save_as ) {
+					delete_post_meta( $post_id, $field_name );
+					foreach( $value as $key => $val ) {
+						add_post_meta( $post_id, $field_name, $val );
+					}
+					
+					$updated = true;
+				} elseif ( 'csv' == $save_as && is_array( $value ) ) {
+					$value = implode( ',', $value );
+				}
+				
+				if ( ! $updated ) {
+					update_post_meta( $post_id, $field_name, $value );
+				}
 			} else {
 				delete_post_meta( $post_id, $field_name );
 			}
@@ -839,7 +869,7 @@ jQuery( document ).ready( function() {
 				break;
 
 			case 'categories':
-				$result = self::custom_box_categories( $field_name, $field_name_var, $bulk_mode );
+				$result = self::custom_box_categories( $field_name, $bulk_mode );
 				break;
 
 			case 'taxonomy':
@@ -944,7 +974,7 @@ jQuery( document ).ready( function() {
 	}
 
 
-	public static function custom_box_select( $column_name, $field_name, $field_name_var, $options, $bulk_mode = false, $multiple = false ) {
+	public static function custom_box_select( $column_name, $field_name, $field_name_var, $options, $bulk_mode = false, $multiple = false, $bypass_no_change = false ) {
 		$result = '<select name="' . $field_name;
 		if ( $multiple ) {
 			if ( ! $bulk_mode ) {
@@ -956,12 +986,14 @@ jQuery( document ).ready( function() {
 
 		$result .= '">';
 
-		$unset_option = Custom_Bulkquick_Edit_Settings::RESET . '|' . esc_html__( '&mdash; Unset &mdash;', 'custom-bulkquick-edit' );
-		array_unshift( $options, $unset_option );
+		if ( empty( $bypass_no_change ) ) {
+			$unset_option = Custom_Bulkquick_Edit_Settings::RESET . '|' . esc_html__( '&mdash; Unset &mdash;', 'custom-bulkquick-edit' );
+			array_unshift( $options, $unset_option );
 
-		if ( $bulk_mode && ! $multiple ) {
-			$no_change_option = '|' . esc_html__( '&mdash; No Change &mdash;', 'custom-bulkquick-edit' );
-			array_unshift( $options, $no_change_option );
+			if ( $bulk_mode && ! $multiple ) {
+				$no_change_option = '|' . esc_html__( '&mdash; No Change &mdash;', 'custom-bulkquick-edit' );
+				array_unshift( $options, $no_change_option );
+			}
 		}
 
 		foreach ( $options as $option ) {
@@ -1027,7 +1059,7 @@ jQuery( document ).ready( function() {
 	}
 
 
-	public static function custom_box_categories( $field_name, $field_name_var, $bulk_mode = false ) {
+	public static function custom_box_categories( $field_name, $bulk_mode = false ) {
 		global $post;
 
 		$post_id  = isset( $post->ID ) && empty( $bulk_mode ) ? $post->ID : null;
@@ -1345,6 +1377,30 @@ jQuery( document ).ready( function() {
 		$result .= '<div class="hidden" id="' . $taxonomy . '_' . $post_id . '">' . implode( ',', $term_ids ) . '</div>';
 
 		return $result;
+	}
+
+
+	public static function get_field_save_as( $post_type = null, $field_name = null ) {
+		$key = self::get_field_key( $post_type, $field_name );
+
+		if ( empty( $key ) ) {
+			return false;
+		}
+
+		$key    .= Custom_Bulkquick_Edit_Settings::SAVE;
+		$details = cbqe_get_option( $key );
+
+		return $details;
+	}
+
+
+	public static function is_field_checkbox( $field_type ) {
+		$field_type = apply_filters( 'cbqe_field_type_core', $field_type );
+		if ( 'checkbox' == $field_type ) {
+			return true;
+		}
+
+		return false;
 	}
 }
 

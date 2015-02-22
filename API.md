@@ -42,6 +42,10 @@ The [Custom Bulk/Quick Edit plugin](http://wordpress.org/plugins/custom-bulkquic
 
 	Modify the field input types offered. [example](https://gist.github.com/michael-cannon/6333075)
 
+* `cbqe_settings_save_as_types`
+
+	Modify the field save types offered.
+
 * `cbqe_settings_as_taxonomy`
 
 	Modify the field taxonomy types offered.
@@ -61,6 +65,10 @@ The [Custom Bulk/Quick Edit plugin](http://wordpress.org/plugins/custom-bulkquic
 * `cbqe_settings_config_desc`
 
 	Customize the configuration text. [example](https://gist.github.com/michael-cannon/)
+
+* `cbqe_settings_save_as_desc`
+
+	Customize the save type text.
 
 * `cbqe_version`
 
@@ -117,6 +125,10 @@ The [Custom Bulk/Quick Edit plugin](http://wordpress.org/plugins/custom-bulkquic
 * `cbqe_post_save_value`
 
 	Compute post value to be saved based upon given field_name.
+
+* `cbqe_field_type_core`
+	
+	Useful for when the given `field_type` is custom, but the base field type is essentially `checkbox` or the like for RESET and similar operations. Since 1.5.3.
 
 ## Need More?
 
