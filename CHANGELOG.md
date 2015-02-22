@@ -1,6 +1,23 @@
-# CHANGELOG Custom Bulk/Quick Edit by Aihrus
+# CHANGELOG Custom Bulk/Quick Edit
 
 ## master
+
+## 1.5.3
+* Add documentation links
+* Add filter cbqe_field_type_core
+* Add filter cbqe_settings_save_as_desc
+* Add filter cbqe_settings_save_as_types
+* Add UPGRADING.md
+* Remove "by Aihrus" labeling
+* Require Aihrus Framework 1.1.7
+* RESOLVE #53 Save as string than array option needed
+* RESOLVE #60 Create array to configuration helper method
+* RESOLVE Avoid unused parameters such as '$field_name_var'.
+* RESOLVE Reset values not deleted from postmeta
+* Revise How do I add custom fields to my bulk/quick edit page? title
+* Revise readme layout
+* Update copyright to 2015
+* Update PHPCS to WordPress-Core
 
 ## 1.5.2
 * Add column view FAQ entry
