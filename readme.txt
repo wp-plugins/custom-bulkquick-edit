@@ -1,6 +1,6 @@
 === Custom Bulk/Quick Edit ===
 
-Contributors: comprock
+Contributors: comprock, saurabhd
 Donate link: http://aihr.us/about-aihrus/donate/
 Tags: custom, bulk edit, quick edit, custom post types, woocommerce
 Requires at least: 3.6
