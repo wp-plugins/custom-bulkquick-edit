@@ -2,6 +2,11 @@
 
 ## master
 
+## 1.6.0
+* Add FAQ maximum bulk edit limit
+* Require Aihrus Framework 1.2.1
+* Update branding to Axelerant
+
 ## 1.5.3
 * Add documentation links
 * Add filter cbqe_field_type_core

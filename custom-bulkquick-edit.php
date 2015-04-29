@@ -3,9 +3,9 @@
  * Plugin Name: Custom Bulk/Quick Edit
  * Plugin URI: http://wordpress.org/plugins/custom-bulkquick-edit/
  * Description: Custom Bulk/Quick Edit allows you to easily add custom fields to the edit screen bulk and quick edit panels.
- * Version: 1.5.3
- * Author: Michael Cannon
- * Author URI: http://aihr.us/resume/
+ * Version: 1.6.0
+ * Author: Axelerant
+ * Author URI: https://axelerant.com/
  * License: GPLv2 or later
  * Text Domain: custom-bulkquick-edit
  * Domain Path: /languages
@@ -13,7 +13,7 @@
 
 
 /**
- * Copyright 2015 Michael Cannon (email: mc@aihr.us)
+ * Copyright 2015 Axelerant (email: info@axelerant.com)
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License, version 2, as
  * published by the Free Software Foundation.
@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'CBQE_AIHR_VERSION' ) ) {
-	define( 'CBQE_AIHR_VERSION', '1.1.7' );
+	define( 'CBQE_AIHR_VERSION', '1.2.1' );
 }
 
 if ( ! defined( 'CBQE_BASE' ) ) {
@@ -56,11 +56,11 @@ if ( ! defined( 'CBQE_NAME' ) ) {
 }
 
 if ( ! defined( 'CBQE_PREMIUM_LINK' ) ) {
-	define( 'CBQE_PREMIUM_LINK', '<a href="http://aihr.us/products/custom-bulkquick-edit-premium-wordpress-plugin/">Buy Premium</a>' );
+	define( 'CBQE_PREMIUM_LINK', '<a href="https://axelerant.com/products/custom-bulkquick-edit-premium-wordpress-plugin/">Buy Premium</a>' );
 }
 
 if ( ! defined( 'CBQE_VERSION' ) ) {
-	define( 'CBQE_VERSION', '1.5.3' );
+	define( 'CBQE_VERSION', '1.6.0' );
 }
 
 require_once CBQE_DIR_INC . 'requirements.php';
